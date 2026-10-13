@@ -38,10 +38,12 @@ create table if not exists public.selections (
   id           bigint generated always as identity primary key,
   session_id   uuid not null references public.sessions(session_id) on delete cascade,
   step         text not null,          -- the screen the choice was made on
-  value        text not null,          -- what was chosen
+  value        text not null,          -- what was recorded: the screen it led to, or what was opened or searched
   duration_ms  integer not null,       -- time on that screen before choosing
   created_at   timestamptz not null default now()
 );
+-- What the person saw and pressed ("Register", "Next", "Sign up"). Added later, so older setups get it here.
+alter table public.selections add column if not exists label text;
 
 -- A sign-in. `account` is a scrambled id: the same account always gives the
 -- same value, but it cannot be turned back into an email.
@@ -52,7 +54,20 @@ create table if not exists public.identities (
   created_at  timestamptz not null default now()
 );
 
+-- A task run (lesson 4): one participant trying one task. It ends by itself at success, or at Give up; a run
+-- with no end was interrupted (the page reloaded or closed). What they pressed meanwhile is in
+-- clicks and selections, as always.
+create table if not exists public.task_runs (
+  id          bigint generated always as identity primary key,
+  session_id  uuid not null references public.sessions(session_id) on delete cascade,
+  task        text not null,
+  started_at  timestamptz not null,
+  ended_at    timestamptz,
+  ended_by    text check (ended_by in ('success', 'gave_up'))
+);
+
 create index if not exists clicks_session_idx on public.clicks (session_id);
+create index if not exists task_runs_session_idx on public.task_runs (session_id);
 create index if not exists selections_session_idx on public.selections (session_id);
 create index if not exists identities_session_idx on public.identities (session_id);
 
@@ -67,11 +82,18 @@ alter table public.sessions   enable row level security;
 alter table public.clicks     enable row level security;
 alter table public.selections enable row level security;
 alter table public.identities enable row level security;
+alter table public.task_runs  enable row level security;
+
+-- The rights themselves, granted here so the project's "Automatically expose new tables" setting
+-- doesn't matter either way.
+grant usage on schema public to anon, authenticated;
+grant insert on public.sessions, public.clicks, public.selections, public.identities, public.task_runs to anon;
+grant select on public.sessions, public.clicks, public.selections, public.identities, public.task_runs to authenticated;
 
 do $$
 declare t text;
 begin
-  foreach t in array array['sessions', 'clicks', 'selections', 'identities'] loop
+  foreach t in array array['sessions', 'clicks', 'selections', 'identities', 'task_runs'] loop
     execute format('drop policy if exists "app adds rows" on public.%I', t);
     execute format('create policy "app adds rows" on public.%I for insert to anon with check (true)', t);
     execute format('drop policy if exists "you read rows" on public.%I', t);
@@ -108,6 +130,7 @@ create table if not exists public.coursework (
 alter table public.coursework enable row level security;
 drop policy if exists "coursework open" on public.coursework;
 create policy "coursework open" on public.coursework for all to anon, authenticated using (true) with check (true);
+grant select, insert, update, delete on public.coursework to anon, authenticated;
 
 -- What is in your space (kept for older dashboards; nothing uses it now):
 -- every view and table in `analysis`, its definition (the comment you put on

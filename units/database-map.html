@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- The course's up-to-date copy of this page (see core/central.js). -->
+<script src="https://asafbarzilay-web.github.io/data-mindset-template/core/central.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Database Map</title>
-<!-- The four tables on one page: what a row is, the columns, how they connect. -->
+<!-- The tables on one page: what a row is, the columns, how they connect (task_runs from lesson 4). -->
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; background: #F4F4F2; color: #1C1C1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
@@ -36,6 +38,9 @@
   .link .drop { position: absolute; top: 26px; height: 38px; border-left: 2px solid #C2410C; }
   .link .label { position: absolute; left: 50%; top: 3px; transform: translateX(8px); font-size: 12.5px; color: #C2410C; font-weight: 600; white-space: nowrap; }
   .children { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .tbl.later { margin-top: 22px; }
+  .tbl.later .muted { color: #8A8A85; font-weight: 400; }
+  .tbl.later .note { margin: 0; padding: 0 18px 14px; font-size: 13.5px; color: #4A4A45; }
 
   .pairs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
   .pair { background: #fff; border: 1px solid #E2E2DE; border-radius: 14px; padding: 16px 18px; }
@@ -105,8 +110,9 @@
       <div class="head"><div class="name">selections</div><div class="is">one row = <b>one choice</b></div></div>
       <dl>
         <dt class="key">session_id</dt><dd><span class="ty">id</span> the visit it belongs to</dd>
-        <dt>step</dt><dd><span class="ty">text</span> the screen</dd>
-        <dt>value</dt><dd><span class="ty">text</span> what was chosen</dd>
+        <dt>step</dt><dd><span class="ty">text</span> the screen the choice was made on</dd>
+        <dt>label</dt><dd><span class="ty">text</span> what the person pressed, as it reads on screen: <code>Register</code>, <code>Next</code>. For reading only: wording changes, so count with <code>value</code></dd>
+        <dt>value</dt><dd><span class="ty">text</span> what the system recorded: the screen it led to (<code>register_email</code>), what was opened (<code>open:p02</code>), searched (<code>search:dog</code>) or liked (<code>like:p02</code>, <code>unlike:p02</code>), or <code>nothing</code> for a button that does nothing (Share, Follow Jane, New post)</dd>
         <dt>duration_ms</dt><dd><span class="ty">number</span> time on the screen before choosing</dd>
         <dt>created_at</dt><dd><span class="ty">time</span> when</dd>
       </dl>
@@ -119,6 +125,18 @@
         <dt>created_at</dt><dd><span class="ty">time</span> when</dd>
       </dl>
     </div>
+  </div>
+
+  <div class="tbl later">
+    <div class="head"><div class="name">task_runs</div><div class="is">one row = <b>one try at a task</b> <span class="muted">· from lesson 4</span></div></div>
+    <dl>
+      <dt class="key">session_id</dt><dd><span class="ty">id</span> the visit it happened in (joins to <code>sessions</code>)</dd>
+      <dt>task</dt><dd><span class="ty">text</span> the task, in words, as the participant was given it</dd>
+      <dt>started_at</dt><dd><span class="ty">time</span> when the task was shown</dd>
+      <dt>ended_at</dt><dd><span class="ty">time</span> when it ended: the moment the goal was reached, or Give up; empty if the run was interrupted (page reloaded or closed)</dd>
+      <dt>ended_by</dt><dd><span class="ty">text</span> <code>success</code> (the app ends the run itself when the goal is reached) or <code>gave_up</code></dd>
+    </dl>
+    <p class="note">What they pressed during the run is in <code>clicks</code> and <code>selections</code>: the rows of the same <code>session_id</code> between <code>started_at</code> and <code>ended_at</code>.</p>
   </div>
 
   <h2>Four things people get wrong</h2>

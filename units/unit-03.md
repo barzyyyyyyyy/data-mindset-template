@@ -43,7 +43,7 @@ Your assistant asks what each number should count, asks about anything you left 
 the sentence from what you said.
 
 **In scope:** the start screen, the registration funnel, and anything you need to check them.
-**Not yet:** time on each screen, heatmaps, segments. Those come in later lessons.
+**Not yet:** time on each screen, heatmaps. Those come in later lessons. (A question may ask you to split a number, by device for example: build that On your own. Segments get their full lesson in lesson 8.)
 
 ## 3. Check yourself
 

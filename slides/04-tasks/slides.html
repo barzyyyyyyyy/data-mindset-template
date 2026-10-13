@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- The course's up-to-date copy of this page (see core/central.js). -->
+<script src="https://asafbarzilay-web.github.io/data-mindset-template/core/central.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tasks: Success and Time</title>
+<link rel="stylesheet" href="../deck.css">
+<style>
+  .runs { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+  .run { display: grid; grid-template-columns: 150px 1fr 220px; align-items: center; gap: 18px; font-size: 21px; }
+  .run .who { font-weight: 700; }
+  .run .path { display: flex; gap: 8px; flex-wrap: wrap; }
+  .run .path span { background: #fff; border: 2px solid #E5E3DD; border-radius: 10px; padding: 6px 12px; font-size: 18px; }
+  .run .path span.goal { border-color: #15803D; color: #15803D; font-weight: 700; }
+  .run .path span.off { border-style: dashed; color: #8A8A85; }
+  .run .path span.end { background: #1C1C1A; color: #fff; border-color: #1C1C1A; }
+  .run .verdict { font-weight: 700; }
+  .dots { position: relative; height: 190px; margin: 26px 0 8px; border-bottom: 2px solid #1C1C1A; }
+  .dots i { position: absolute; bottom: 8px; width: 15px; height: 15px; border-radius: 50%; background: #C2410C; transform: translateX(-50%); }
+  .dots b { position: absolute; bottom: -34px; transform: translateX(-50%); font-size: 17px; font-weight: 600; color: #6B6B66; }
+  .marker { position: absolute; top: 0; bottom: 0; border-left: 3px dashed; }
+  .marker em { position: absolute; top: -30px; left: 6px; font-style: normal; font-weight: 700; font-size: 18px; white-space: nowrap; }
+  .flow { display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; font-size: 18px; margin-top: 8px; }
+  .flow .box { background: #fff; border: 2px solid #E5E3DD; border-radius: 14px; padding: 12px 14px; line-height: 1.35; }
+  .flow .arrow { font-size: 26px; color: #C2410C; }
+  .shot { display: grid; grid-template-columns: auto 1fr; gap: 48px; align-items: center; }
+  .shot img { height: 520px; width: auto; border-radius: 22px; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+  td, th { padding: 8px 18px; border-bottom: 2px solid #E5E3DD; text-align: left; }
+  th { color: #6B6B66; font-size: 20px; }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <section class="slide dark">
+    <p class="kicker">Lesson 4 · Tasks: success and time</p>
+    <h1>Can people do it,<br>and how long does it take?</h1>
+    <p class="muted">A usability task gives people a goal, and the data says whether they reached it, and how fast.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">A simple question</p>
+    <h2>"Logging a run in Stride takes 62 seconds on average"</h2>
+    <p><span class="big accent">62 s</span></p>
+    <p>Stride, a running app, asked 40 people to log a run. The average time of the runs was 62 seconds. So logging a run takes about a minute?</p>
+    <p class="muted small">Write down two things that could make that sentence wrong before the next slide.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">What a task is</p>
+    <h2>A goal you give a participant, with a way to tell if they reached it</h2>
+    <div class="grid g4">
+      <div class="card"><div class="lbl">The goal</div><p>In their words: <i>"Log yesterday's 5 km run."</i></p></div>
+      <div class="card"><div class="lbl">Where it starts</div><p>The same screen for everyone, so times compare.</p></div>
+      <div class="card"><div class="lbl accent">Success</div><p>What in the <b>data</b> shows they got there: a screen reached, a choice made.</p></div>
+      <div class="card"><div class="lbl">How it ends</div><p>The app knows the goal: the run <b>ends by itself</b> when it's reached. Or they press <b>Give up</b>.</p></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">Usability tests (Maze, UserTesting, a researcher with a notebook) all run on tasks. The task is only as useful as its success criteria.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Good tasks, bad tasks</p>
+    <h2>A task must end in something the app records</h2>
+    <div class="grid g2">
+      <div class="card"><div class="lbl good">A good task</div><p>"Like the photo of the three puppies."<br>"Find the black dog on the beach and open it."<br>"Like any photo from a dog search."</p><p class="muted small" style="margin-top:12px">Each ends in a choice the app records, and takes a few steps to reach.</p></div>
+      <div class="card"><div class="lbl bad">Not a task</div><p>"Find a photo you love." <span class="muted small">(no row says "love")</span><br>"Write a funny bio." <span class="muted small">(typing isn't recorded)</span><br>"Open your profile." <span class="muted small">(one tap: too simple)</span></p><p class="muted small" style="margin-top:12px">A task must end in something the data can check, and take at least 3 choices.</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">One photo, or any?</p>
+    <h2>A specific task can fail in a way a generic one can't</h2>
+    <div class="runs">
+      <div class="run"><div class="who">Dana</div><div class="path"><span>Search</span><span>"dog"</span><span>open the puppies</span><span class="goal">Like</span></div><div class="verdict good">Success</div></div>
+      <div class="run"><div class="who">Omer</div><div class="path"><span>Search</span><span>"dog"</span><span class="off">open the dalmatian</span><span class="off">Like</span><span>…</span></div><div class="verdict bad">Not yet: wrong photo</div></div>
+      <div class="run"><div class="who">Lior</div><div class="path"><span>Search</span><span>"dog"</span><span class="off">open the labrador</span><span class="off">Like</span><span class="end">Give up</span></div><div class="verdict bad">Failed</div></div>
+    </div>
+    <p class="muted small" style="margin-top:24px">"Like the three puppies" has one right answer: Omer liked a dog, just not that one, so his run goes on. "Like any photo" would have counted him. Real usability tasks are usually specific.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">How they got there</p>
+    <h2>Direct, indirect, failed</h2>
+    <p>The <b>best route</b> is the fewest choices that reach the goal. For "open a photo from a dog search" it is 3: <b>Search → "dog" → open a photo</b>.</p>
+    <div class="runs">
+      <div class="run"><div class="who">Direct</div><div class="path"><span>Search</span><span>"dog"</span><span class="goal">open a photo</span></div><div class="verdict">3 choices, no more</div></div>
+      <div class="run"><div class="who">Indirect</div><div class="path"><span class="off">Chats</span><span class="off">Profile</span><span>Search</span><span>"dog"</span><span class="goal">open a photo</span></div><div class="verdict">got there, with detours</div></div>
+      <div class="run"><div class="who">Failed</div><div class="path"><span>Search</span><span class="off">Home</span><span class="end">Give up</span></div><div class="verdict">never reached it</div></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">Direct and indirect are both successes. Indirect is a finding too: something on the way sent people the wrong way first.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Runs and people</p>
+    <h2>One participant, sometimes two runs</h2>
+    <div class="grid g3">
+      <div class="card"><div class="lbl">Success</div><p>The app ended the run: the goal was reached.</p></div>
+      <div class="card"><div class="lbl">Give up</div><p>They said they couldn't. A clear failure.</p></div>
+      <div class="card"><div class="lbl accent">No end at all</div><p>The page reloaded or closed mid-task. Often the same person starts again, in a new visit.</p></div>
+    </div>
+    <p class="muted small" style="margin-top:22px">Count runs, and the interrupted run is a "failure" by someone who then succeeded. Count <b>participants</b> (one result each: their last run), and it isn't.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Time to success</p>
+    <h2>From the moment the task was shown, to the moment it succeeded</h2>
+    <div class="flow">
+      <div class="box">Task shown<br><span class="muted small">started_at</span></div><div class="arrow">→</div>
+      <div class="box">Search · "dog"</div><div class="arrow">→</div>
+      <div class="box">open the puppies</div><div class="arrow">→</div>
+      <div class="box" style="border-color:#15803D"><b class="good">Like</b><br><span class="muted small">ended_at: the run ends here</span></div>
+    </div>
+    <p style="margin-top:26px">The app stops the clock itself, so a successful run's time is <code>ended_at − started_at</code>. Only successful runs have a time to success.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Ten successful runs, in seconds</p>
+    <h2>One person left it open while they made coffee</h2>
+    <div class="dots">
+      <i style="left:6.8%;bottom:8px"></i><i style="left:6.8%;bottom:25px"></i><i style="left:6.8%;bottom:42px"></i><i style="left:6.8%;bottom:59px"></i><i style="left:6.8%;bottom:76px"></i><i style="left:6.8%;bottom:93px"></i><i style="left:6.8%;bottom:110px"></i><i style="left:6.8%;bottom:127px"></i><i style="left:6.8%;bottom:144px"></i><i style="left:95.0%"></i>
+      <b style="left:2%">0</b><b style="left:11.3%">1 min</b><b style="left:48.5%">5 min</b><b style="left:95.0%">10 min</b>
+      <div class="marker" style="left:7.0%;border-color:#15803D"><em class="good" style="left:auto;right:8px">median 32 s</em></div>
+      <div class="marker" style="left:15.6%;border-color:#B91C1C"><em class="bad">mean 88 s</em></div>
+    </div>
+    <p style="margin-top:44px">Each dot is one run. Nine people took 22–40 seconds. One took 10 minutes. The <b>mean</b> (88 s) describes nobody. The <b>median</b>, the middle of the runs, says 32 seconds: what a typical person needed.</p>
+  </section>
+
+  <section class="slide dark">
+    <p class="kicker">Principle · How long?</p>
+    <p class="quote">Times are skewed: a few runs take ten times longer than the rest. Report the <span class="accent">median</span>, and say so.</p>
+    <p class="muted" style="margin-top:22px">The long runs are worth a look too: were they lost, or just away? But they shouldn't decide what "how long" means.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">When nobody can do it</p>
+    <h2>0% success is a finding about the app, not the people</h2>
+    <p>Stride asked people to <i>"export your run to share it"</i>. The Export button looks fine, and does nothing. Every participant pressed it, some twice, then gave up or left.</p>
+    <div class="grid g3" style="margin-top:18px">
+      <div class="card"><div class="lbl">The rate</div><p>0 of 40 succeeded.</p></div>
+      <div class="card"><div class="lbl">The presses</div><p>The data shows they tried: the press is recorded, it just led nowhere.</p></div>
+      <div class="card"><div class="lbl accent">The conclusion</div><p>Fix the task or the app. Never "people can't use it".</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Now, our app</p>
+    <h2>Two new buttons on an open photo</h2>
+    <div class="shot">
+      <img src="img/app-photo-viewer.jpg" alt="An open photo with Like and Share at the bottom">
+      <div>
+        <p><b>Like</b> works: the heart fills, and the app records <code>like:p02</code> (press again: <code>unlike:p02</code>).</p>
+        <p><b>Share</b> looks just the same, and does nothing. The app records <code>nothing</code>.</p>
+        <p class="muted small" style="margin-top:18px">On screen you can't tell them apart. In the data you can: that's what <code>value</code> is for.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Your task</p>
+    <h2>Your team chooses one task. Your data is made from it.</h2>
+    <div class="flow">
+      <div class="box"><b>Pick</b> a suggested task<br><span class="muted small">or say your own, in words</span></div><div class="arrow">→</div>
+      <div class="box">Your assistant shows the<br><b>best route</b> and <b>what counts as success</b></div><div class="arrow">→</div>
+      <div class="box"><b>You approve</b><br><span class="muted small">or say it again</span></div><div class="arrow">→</div>
+      <div class="box">Simulated participants<br><b>try your task</b></div>
+    </div>
+    <p style="margin-top:26px">Each try is a row in a new table, <code>task_runs</code>: <code>task</code>, <code>started_at</code>, <code>ended_at</code>, and <code>ended_by</code> (<code>success</code> or <code>gave_up</code>). What they pressed during it is in <code>selections</code>, between start and end.</p>
+    <p class="muted small">Once you check your first question, your task is locked.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Your guided walkthrough</p>
+    <h2>Define your task, then build three panels</h2>
+    <ul>
+      <li><b>Your task</b>, with your assistant: pick or describe, check the route, approve.</li>
+      <li>Load the practice data: it's made from your task.</li>
+      <li><b>Your task's runs:</b> how many, and how they ended: success, gave up, never ended.</li>
+      <li><b>Who succeeded:</b> participants who succeeded directly, indirectly, or failed.</li>
+      <li><b>Time to success</b>, in seconds.</li>
+      <li>Answer the questions. Some need you to build more, on your own. Then write the memo.</li>
+    </ul>
+    <p class="muted small" style="margin-top:18px">The practice data has traps in it. The questions know where. They won't tell you.</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Lesson 4 · Summary</p>
+    <div class="summary">
+      <div>
+        <p class="lbl">What you learnt</p>
+        <ul>
+        <li>A <b>task</b> is a goal plus <b>success criteria</b> the data can check, at least 3 choices away.</li>
+        <li>A <b>specific</b> task (one photo) can fail by the <b>wrong target</b>; a generic one can't.</li>
+        <li><b>Direct, indirect, failed</b>: the best route is the yardstick.</li>
+        <li>Count <b>participants</b>, not runs: an interrupted run is not a failure.</li>
+        <li>Time to success stops at the goal; report the <b>median</b>.</li>
+        <li>When <b>nobody</b> succeeds, suspect the task or the app first.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="lbl">Your self-study</p>
+        <div class="links">
+        <a data-site="view.html?f=units/unit-04.md">Guided walkthrough <span>your task, step by step</span></a>
+        <a data-site="units/database-map.html">The database on one page <span>now with task_runs</span></a>
+        <a data-site="dashboard/">Your dashboard <span>build here</span></a>
+        <a data-site="checker/?lesson=lesson-04">Lesson 4 · Questions <span>5 or 6</span></a>
+        </div>
+        <div class="handin"><b>Hand in:</b> the questions, all correct, and the half-page memo. Its questions are at the end of the Questions page.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script src="../deck.js"></script>
+</body>
+</html>

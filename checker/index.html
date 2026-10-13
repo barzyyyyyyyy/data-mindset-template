@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- The course's up-to-date copy of this page (see core/central.js). -->
+<script src="https://asafbarzilay-web.github.io/data-mindset-template/core/central.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lesson Questions</title>
 <!--
@@ -15,7 +17,7 @@
   coursework), not in this browser.
 -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../supabase-config.js"></script>
+<script src="../core/team.js" data-file="supabase-config.js"></script>
 <script src="../core/coursework.js"></script>
 <script src="../core/course-config.js"></script>
 <script src="../core/course.js"></script>
@@ -34,7 +36,7 @@
   .cells td { padding: 4px 10px 4px 0; font-size: 14.5px; }
   .cells input { width: 140px; }
   .cells .ok { color: #1F7A3F; font-weight: 700; } .cells .no { color: #B42318; font-weight: 700; }
-  textarea.paste { display: block; width: 100%; max-width: 420px; margin-top: 8px; font: inherit; font-size: 13px; padding: 6px 10px; border: 1px dashed #CFCFCA; border-radius: 8px; resize: vertical; }
+  .paste-tip { margin: 6px 0 0; }
   .gaveup-note { grid-column: 2; margin: 8px 0 0; font-size: 13.5px; color: #4A4A45; }
   .gaveup-note i { color: #6B6B66; }
   details.giveup { grid-column: 2; margin-top: 8px; font-size: 13.5px; }
@@ -60,6 +62,7 @@
   .err { color: #B42318; }
   .earlier { background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 12px; padding: 14px 18px; font-size: 15px; line-height: 1.55; margin: 0 0 18px; }
   .memo { margin-top: 34px; }
+  .memo-later { margin-top: 28px; }
   .memo h2 { font-size: 22px; margin: 0 0 4px; }
   .lead.small { font-size: 14px; margin-bottom: 16px; }
   .guide { margin: 0 0 14px; padding-left: 20px; font-size: 15px; line-height: 1.6; color: #4A4A45; }
@@ -87,6 +90,7 @@
   <p class="earlier" id="check-error" hidden></p>
   <div class="all" id="all" hidden>Every question is done. Now finish your memo below.</div>
 
+  <p class="muted memo-later" id="memo-later" hidden>Your memo opens here when every question is right or given up.</p>
   <section class="memo" id="memo" hidden>
     <h2>Your memo</h2>
     <p class="lead small">Half a page, written as one piece. Let these questions guide it:</p>
@@ -124,13 +128,23 @@
   const results = {};
 
   // Checks one answer. The same wrong answer again does not count as a new try.
+  const partial = new Set();
   async function checkOne(q, value) {
     const s = saved[q.id] = saved[q.id] || { tries: 0 };
     if (s.right || s.gaveUp || !value) return;
-    if (value === s.value && s.checked) { results[q.id] = false; return; }
+    // The same answer again is the same verdict, without a try. (A table with empty rows is checked
+    // again: while its filled rows are right, that costs nothing.)
+    const gaps = q.kind === 'table' && Object.values(JSON.parse(value)).some(v => !v);
+    if (value === s.value && s.checked && !gaps) { results[q.id] = false; return; }
     s.value = value; s.tries += 1; s.checked = true;
     // The course server checks it against your team's own data; your lecturer sees each try.
-    try { const r = await Course.check(lesson, q.id, q.kind === 'table' ? JSON.parse(value) : value); s.right = r.right; s.cells = r.cells; }
+    try {
+      const r = await Course.check(lesson, q.id, q.kind === 'table' ? JSON.parse(value) : value);
+      s.right = r.right; s.cells = r.cells;
+      // A table checked row by row: every filled row right so far is progress, not a try.
+      if (r.partial) { s.tries -= 1; partial.add(q.id); results[q.id] = null; document.getElementById('check-error').hidden = true; return; }
+      partial.delete(q.id);
+    }
     catch (e) { s.tries -= 1; s.checked = false; const el = document.getElementById('check-error'); el.textContent = `Could not check: ${e.message}`; el.hidden = false; return; }
     document.getElementById('check-error').hidden = true;
     results[q.id] = s.right;
@@ -156,8 +170,8 @@
       const tv = q.kind === 'table' ? tableOf(s) : null;
       const box = q.kind === 'table'
         ? `<table class="cells">${q.rows.map((r, k) => `<tr><td>${esc(r)}</td><td><input name="${q.id}::${k}" value="${esc(tv[r] ?? '')}" placeholder="${hint[q.cell]}" autocomplete="off" ${ro}></td>
-            <td class="mark">${s.cells && !s.gaveUp ? (s.cells[r] ? '<span class="ok">✓</span>' : '<span class="no">✗</span>') : ''}</td></tr>`).join('')}</table>
-          ${ro ? '' : `<textarea class="paste" data-paste="${q.id}" rows="1" placeholder="Or paste the table here (Copy table on your board's panel)"></textarea>`}`
+            <td class="mark">${s.cells && !s.gaveUp ? (s.cells[r] === true ? '<span class="ok">✓</span>' : s.cells[r] === false ? '<span class="no">✗</span>' : '') : ''}</td></tr>`).join('')}</table>
+          ${ro ? '' : `<p class="muted small paste-tip" data-pastemsg="${q.id}">Tip: press <b>Copy table</b> on your board's panel, then paste into any box above: it fills them all.</p>`}`
         : `<input name="${q.id}" value="${esc(s.value || '')}" placeholder="${hint[q.kind]}" autocomplete="off" ${ro}>`;
       return `<div class="q ${state}">
         <span class="n">${i + 1}</span><div class="text">${esc(q.text)}</div>
@@ -165,7 +179,7 @@
         <div class="answer">
           ${q.kind === 'table' ? '' : box}
           ${s.gaveUp ? '' : `<button type="button" class="one" data-q="${q.id}">Check</button>`}
-          <span class="verdict">${state === 'right' ? '✓ Right' : state === 'wrong' ? 'Not quite' : ''}</span>
+          <span class="verdict">${state === 'right' ? '✓ Right' : partial.has(q.id) ? '<span class="ok">So far so good: fill in the next row.</span>' : state === 'wrong' ? 'Not quite' : ''}</span>
           ${s.tries ? `<span class="tries">${s.tries} ${s.tries === 1 ? 'try' : 'tries'}</span>` : ''}
         </div>${s.gaveUp ? `<p class="gaveup-note"><b>Gave up.</b> The answer was <b>${esc(s.gaveUp.answer)}</b>.<br><i>${esc(s.gaveUp.text)}</i></p>`
         : s.tries >= 2 && !s.right ? `<p class="stuck">Stuck? Tell your assistant: <i>"Question ${i + 1} says not quite."</i>
@@ -192,7 +206,6 @@
 
   function renderMemo() {
     if (!spec.memo || !spec.memo.length) return;
-    document.getElementById('memo').hidden = false;
     document.getElementById('memo-guide').innerHTML = spec.memo.map(q => `<li>${esc(q)}</li>`).join('');
     document.getElementById('memo-text').value = memo.text || '';
     renderMemoState();
@@ -202,6 +215,10 @@
     if (!spec || !spec.memo || !spec.memo.length) return;
     const allRight = spec.questions.every(closed);
     const allWritten = words() >= MIN_WORDS;
+    // The memo opens once every question is right or given up (a memo already begun stays open).
+    const open = allRight || !!(memo.text || '').trim() || !!memo.submitted;
+    document.getElementById('memo').hidden = !open;
+    document.getElementById('memo-later').hidden = open;
     document.getElementById('memo-text').readOnly = !!memo.submitted;
     const btn = document.getElementById('submit-memo'), st = document.getElementById('memo-status');
     document.getElementById('done').hidden = !(allRight && memo.submitted);
@@ -247,21 +264,39 @@
   const form = document.getElementById('form');
   form.addEventListener('submit', (e) => { e.preventDefault(); checkIds(spec.questions.map(q => q.id)); });
   form.addEventListener('click', (e) => { const b = e.target.closest('button.one'); if (b) checkIds([b.dataset.q]); });
-  // Pasting a table (from "Copy table" on a dashboard panel, or a spreadsheet) fills the boxes by row
-  // name: each line is a row name and its number, separated by a tab or spaces.
-  form.addEventListener('input', (e) => {
-    const t = e.target.closest('textarea[data-paste]'); if (!t) return;
-    const q = spec.questions.find(x => x.id === t.dataset.paste);
+  // Pasting a table (from "Copy table" on a dashboard panel, or a spreadsheet) into any of a table
+  // question's boxes fills them all by row name: each line is a row name and its number, separated
+  // by a tab or spaces. Tab-separated lines may have more columns (a panel's "what it counts"): the
+  // first number after the name is used. A single number pastes as usual.
+  form.addEventListener('paste', (e) => {
+    const input = e.target.closest('input[name*="::"]'); if (!input) return;
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    if (!/[\t\n]/.test(text.trim())) return;
+    const q = spec.questions.find(x => x.id === input.name.split('::')[0]); if (!q) return;
+    e.preventDefault();
     const key = x => String(x).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-    let filled = 0;
-    for (const line of t.value.split(/\r?\n/)) {
-      const m = line.trim().match(/^(.*?)[\t ]+([-0-9.,%]+)$/); if (!m) continue;
+    const boxes = q.rows.map((r, k) => form.querySelector(`input[name="${q.id}::${k}"]`));
+    const done = new Set(), rest = [];
+    for (const line of text.split(/\r?\n/)) {
+      const cells = line.split('\t').map(c => c.trim()), num = c => /^-?[0-9][0-9.,]*%?$/.test(c);
+      const at = cells.findIndex((c, i) => i > 0 && num(c));
+      const m = at > 0 ? [line, cells.slice(0, at).join(' '), cells[at]] : line.trim().match(/^(.*?)[\t ]+([-0-9.,%]+)$/);
+      if (!m) continue;
       const k = q.rows.findIndex(r => key(r) === key(m[1]) || key(r).startsWith(key(m[1]) + ' ') || key(m[1]).startsWith(key(r)));
-      const box = k >= 0 && form.querySelector(`input[name="${q.id}::${k}"]`);
-      if (box && !box.readOnly) { box.value = m[2].replace(',', ''); filled++; }
+      if (k >= 0 && !done.has(k)) { done.add(k); if (boxes[k] && !boxes[k].readOnly) boxes[k].value = m[2].replace(',', ''); }
+      else rest.push(m[2]);
     }
-    t.placeholder = filled ? `Filled ${filled} of ${q.rows.length} rows. Press Check.` : t.placeholder;
-    if (filled) t.value = '';
+    // Rows the team named their own way: when the lines left over are exactly as many as the boxes
+    // left empty, they go in order (a funnel's steps are in order); the team checks they line up.
+    const open = q.rows.map((r, k) => k).filter(k => !done.has(k));
+    const byOrder = open.length > 0 && rest.length === open.length;
+    if (byOrder) open.forEach((k, i) => { if (boxes[k] && !boxes[k].readOnly) boxes[k].value = rest[i].replace(',', ''); });
+    const filled = done.size + (byOrder ? open.length : 0);
+    const msg = form.querySelector(`[data-pastemsg="${q.id}"]`);
+    if (msg) msg.innerHTML = !filled
+      ? `The pasted table doesn't fit this question's rows (${q.rows.map(esc).join(', ')}). Is it the right panel?`
+      : byOrder ? `Filled ${filled} of ${q.rows.length} rows${done.size ? ', some' : ''} in the order you pasted them: check each number is on the right row, then press <b>Check</b>.`
+      : `Filled ${filled} of ${q.rows.length} rows. Press <b>Check</b>.`;
   });
   // Giving up: typing keeps the words (the page re-renders often), the button opens at 20 words.
   form.addEventListener('input', (e) => {
@@ -351,6 +386,12 @@
       if (err.locked) {
         document.getElementById('title').textContent = 'This lesson opens in class';
         document.querySelector('.lead').innerHTML = 'Its questions become available when your lecturer opens the lesson. <a href="../">Back to your home page</a>';
+        document.querySelector('.bar').style.display = 'none';
+        return;
+      }
+      if (/your task/i.test(err.message)) {   // lesson 4: the questions are about the team's own task
+        document.getElementById('title').textContent = 'First, your task';
+        document.querySelector('.lead').innerHTML = 'These questions are about the task your team chooses. Define it with your assistant (<a href="../view.html?f=units/unit-04.md">the walkthrough, step 1</a>), then come back.';
         document.querySelector('.bar').style.display = 'none';
         return;
       }

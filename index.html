@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- The course's up-to-date copy of this page (see core/central.js). -->
+<script src="https://asafbarzilay-web.github.io/data-mindset-template/core/central.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Study Platform</title>
 <!-- The team's home page: the current lesson, the tools, every lesson. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
+<script src="core/team.js" data-file="supabase-config.js"></script>
 <script src="core/coursework.js"></script>
 <script src="core/course-config.js"></script>
 <script src="core/course.js"></script>
@@ -27,6 +29,9 @@
   .btn.ghost { border: 1px solid #55554F; color: #fff; }
   .btn.off { border: 1px dashed #4A4A45; color: #77776F; cursor: default; }
   .now .opens { color: #F6B38A; }
+  .update { background: #EEF4FF; border: 1px solid #C7D7FE; border-radius: 12px; padding: 14px 18px; font-size: 15px; line-height: 1.55; margin: 0 0 16px; }
+  .update a.go { display: inline-block; margin: 6px 0 2px; background: #1C1C1A; color: #fff; text-decoration: none; font-weight: 600; padding: 7px 14px; border-radius: 8px; }
+  .update small { display: block; color: #6B6B66; }
   .unset { background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 12px; padding: 14px 18px; font-size: 15px; line-height: 1.55; margin: 0 0 16px; }
   .unset a { color: #92400E; font-weight: 600; }
   .tag.unfinished { background: #FEF3C7; color: #92400E; }
@@ -93,12 +98,13 @@
       <summary><b>Your AI assistant</b><span>How to start it ↓</span></summary>
       <ol>
         <li>Claude app → <b>Code</b> → <b>+ New</b></li>
-        <li><b>Cloud → Data-mindset</b> → <b class="team">your team's repository</b></li>
+        <li>Check the chips say <b>Data-mindset</b> and <b class="team">your repository</b></li>
         <li>Ask: <i>"What are we working on?"</i></li>
       </ol>
     </details>
   </div>
 
+  <div class="update" id="update" hidden></div>
   <div class="unset" id="unset" hidden><b>Not connected to a database yet.</b> This copy can't record or show anything
     until the one-time setup is done. <a href="units/setup.html">Follow the one-time setup →</a></div>
   <div class="now" id="now">Loading…</div>
@@ -117,8 +123,8 @@
   <h2>Start your AI assistant</h2>
   <ol class="steps">
     <li><span class="h">Open the Claude app.</span> Click <b>Code</b>, then <b>+ New</b>.</li>
-    <li><span class="h">Choose your repository.</span> Switch <b>Local</b> to <b>Cloud → Data-mindset</b>,
-      then pick <b class="team">your team's repository</b>.</li>
+    <li><span class="h">Check it's yours.</span> Above the message box: <b>Data-mindset</b> and <b class="team">your repository</b>.
+      If not, click the cloud chip → <b>Cloud → Data-mindset</b>, and <b>+ Select repository…</b></li>
     <li><span class="h">Start.</span> Ask: <i>"What are we working on?"</i> It should answer with your current lesson.</li>
   </ol>
   </div>
@@ -129,8 +135,28 @@
 </div>
 <script>
   // The team's repository name is the first part of this site's address.
-  const repo = location.hostname.endsWith('github.io') ? location.pathname.split('/')[1] : '';
+  // The team's repository: from ?site on the course's central copy, else from this site's address.
+  const repo = window.COURSE_TEAM ? window.COURSE_TEAM.site.split('/')[1]
+    : location.hostname.endsWith('github.io') ? location.pathname.split('/')[1] : '';
   if (repo) document.querySelectorAll('.team').forEach(el => { el.textContent = repo; });
+  // A course update this copy doesn't have yet: GitHub says how many course changes the fork is missing.
+  // The page can't update the fork itself (only its owner can); it sends them to the two clicks that do.
+  // (Only on a local copy: the course's central copy is always current.)
+  if (repo && !window.COURSE_TEAM) {
+    const owner = location.hostname.split('.')[0], COURSE = 'asafbarzilay-web/data-mindset-template';
+    if (`${owner}/${repo}`.toLowerCase() !== COURSE.toLowerCase()) {
+      fetch(`https://api.github.com/repos/${owner}/${repo}/compare/main...${COURSE.replace('/', ':')}:main`)
+        .then(r => r.ok ? r.json() : null).then(c => {
+          if (!c || !c.ahead_by) return;
+          const el = document.getElementById('update');
+          el.innerHTML = `<b>A course update is waiting</b> (${c.ahead_by} change${c.ahead_by === 1 ? '' : 's'}).<br>
+            <a class="go" href="https://github.com/${owner}/${repo}" target="_blank" rel="noopener">Update now</a>
+            <small>It opens your repository on GitHub: click <b>Sync fork</b>, then <b>Update branch</b>. Your site refreshes about
+            a minute later. (Or start a new session with your assistant: it updates by itself.)</small>`;
+          el.hidden = false;
+        }).catch(() => {});
+    }
+  }
   // A copy whose database isn't filled in yet (the course's original, or a new fork) says so.
   document.getElementById('unset').hidden = !/YOUR-PROJECT/.test(SUPABASE_URL);
   const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -166,7 +192,7 @@
       <div class="actions">
         ${focus.slides ? step('1 · Class slides', esc(focus.slides), true, true) : ''}
         ${focus.checker ? step('2 · Guided walkthrough', brief(focus), open && !focus.slides, open) : ''}
-        ${focus.checker ? step(`3 · Lesson ${focus.n} · Questions`, checker(focus), false, open) : ''}
+        ${focus.checker ? step('3 · Questions', checker(focus), false, open) : ''}
       </div>
       ${lessons.filter(unfinished).map(l => `<p class="again">Lesson ${l.n} isn't finished yet. You can still finish it: <a href="${checker(l)}">its questions and memo</a>.</p>`).join('')}
       ${open ? '' : `<p class="again">✓ Lesson ${cur.n} done. Go back over it: ${[cur.slides && `<a href="${esc(cur.slides)}">slides</a>`, cur.checker && `<a href="${brief(cur)}">walkthrough</a>`, cur.checker && `<a href="${checker(cur)}">questions</a>`].filter(Boolean).join(' · ')}</p>`}`;
@@ -181,7 +207,11 @@
         <div class="n">${isDone(l) ? '✓' : l.n}</div>
         <div class="t"><b>${esc(l.title)}</b>${l === focus ? `<span class="tag">${open ? 'now' : 'next'}</span>` : ''}${isDone(l) ? '<span class="tag done">done</span>' : ''}${status(l)}<div>${esc(l.question)}</div></div>
         <div class="go">${!l.unit ? '' : l.n > cur.n
-          ? `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}${l.checker ? '<span class="locked">Walkthrough and questions open in class</span>' : ''}`
+          // A later lesson stays closed. Only once the current lesson is done does the next one show
+          // its slides (it is then the "Up next" card); its walkthrough and questions open in class.
+          ? (l === focus
+            ? `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}${l.checker ? '<span class="locked">Walkthrough and questions open in class</span>' : ''}`
+            : '<span class="locked">Opens in class</span>')
           : `${l.slides ? `<a href="${esc(l.slides)}">Slides</a>` : ''}${l.checker ? `<a href="${brief(l)}">Walkthrough</a><a href="${checker(l)}">Questions</a>` : ''}`}</div>
       </div>`).join('');
   }).catch(() => { document.getElementById('now').textContent = 'Could not load the lessons.'; });

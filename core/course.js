@@ -16,6 +16,8 @@ const Course = (() => {
   let who = null;
   async function student() {
     if (who) return who;
+    // On the course's central copy of a page, the team comes with it (core/central.js).
+    if (window.COURSE_TEAM) return (who = window.COURSE_TEAM.site);
     let site = location.hostname.endsWith('github.io') ? location.origin + root : '';
     if (!site) site = (await fetch(root + 'SITE', { cache: 'no-store' }).then(r => r.ok ? r.text() : '').catch(() => '')).trim();
     const m = site.match(/^https?:\/\/([^.]+)\.github\.io\/([^/]+)/);

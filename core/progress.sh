@@ -27,8 +27,26 @@ try:
 except Exception:
     print('unknown')")
 echo "Practice data in the database: $loaded"
-curl -s "$URL/rest/v1/coursework?select=lesson,question,is_right,submitted_at&lesson=neq.practice-data&order=lesson,question" -H "apikey: $KEY" \
-  || echo "Could not reach the database."
+# Each lesson's questions as the course has them now (old answers to removed questions don't count).
+curl -s "$URL/rest/v1/coursework?select=lesson,question,is_right,submitted_at,answer&lesson=neq.practice-data" -H "apikey: $KEY" |
+STUDENT_ID="$STUDENT_ID" FN="$COURSE_URL/functions/v1/course" python3 -c '
+import json, os, sys, urllib.request
+try: rows = json.load(sys.stdin)
+except Exception: print("Questions: could not reach the database."); sys.exit(0)
+if not isinstance(rows, list) or not rows: print("Questions: nothing answered yet."); sys.exit(0)
+for lesson in sorted({r["lesson"] for r in rows}):
+    mine = {r["question"]: r for r in rows if r["lesson"] == lesson}
+    try:
+        req = urllib.request.Request(os.environ["FN"], json.dumps({"action": "questions", "lesson": lesson, "student": os.environ["STUDENT_ID"]}).encode(), {"Content-Type": "application/json"})
+        qs = json.load(urllib.request.urlopen(req, timeout=10))["questions"]
+    except Exception:
+        print(f"{lesson}: could not reach the course server."); continue
+    open_ = [str(i + 1) for i, q in enumerate(qs) if not (mine.get(q["id"], {}).get("is_right") or q["id"] + ":gaveup" in mine)]
+    memo = mine.get("memo")
+    memo_state = "submitted" if memo and memo.get("submitted_at") else "draft, not submitted" if memo and (memo.get("answer") or "").strip() else "not started"
+    done, still = len(qs) - len(open_), ", ".join(open_)
+    print(f"{lesson} questions: {done} of {len(qs)} right or given up." + (f" Still open (numbers as on the page): {still}. Not memo time yet." if open_ else " All done.") + f" Memo: {memo_state}.")
+'
 echo
 
 # What is built so far, from the repository: carry on from here, don't start the lesson over.

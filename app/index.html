@@ -365,6 +365,16 @@
   }
   .overlay-bar .credit { margin: 0; }
   .overlay-bar .credit b, .overlay-bar .credit span { color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+  /* Like works (the heart fills; pressing again un-likes). Share looks the same and does nothing:
+     only the data can tell them apart (value like:p02 against value nothing). */
+  .photo-actions { position: absolute; left: 0; right: 0; bottom: 34px; display: flex; gap: 14px; padding: 0 18px; }
+  .photo-actions button {
+    display: flex; align-items: center; gap: 7px; border: 0; cursor: pointer;
+    background: rgba(0,0,0,0.35); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    color: #fff; font: 500 15px/1 Roboto, -apple-system, system-ui, sans-serif; padding: 10px 16px; border-radius: 22px;
+  }
+  .photo-actions svg { width: 20px; height: 20px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .photo-actions .liked svg { fill: #FF3B5C; stroke: #FF3B5C; }
   .close-x {
     width: 32px; height: 32px; border: 0; background: none; cursor: pointer;
     font-size: 26px; line-height: 1; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6);
@@ -586,6 +596,7 @@
   let screen = 'start';
   let overlay = null;          // 'photo_open' | 'keyboard' | null
   let openPhoto = null;        // which photo the overlay is showing
+  const liked = new Set();     // photos liked in this visit (the heart stays filled)
   let chatWith = null;
   let searchText = '';
   let signupEmail = '';   // held from Register step 1 until the account is created
@@ -999,6 +1010,10 @@
         <div class="overlay-bar">
           ${credit ? creditMarkup(credit.face, credit.who, credit.at) : '<span></span>'}
           <button class="close-x" data-close="1" aria-label="Close">&times;</button>
+        </div>
+        <div class="photo-actions">
+          <button data-like="1" class="${liked.has(openPhoto) ? 'liked' : ''}" aria-label="Like"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2z"/></svg>Like</button>
+          <button data-share="1" aria-label="Share"><svg viewBox="0 0 24 24"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 3v12"/><path d="M7.5 7.5 12 3l4.5 4.5"/></svg>Share</button>
         </div>`;
     }
   }
@@ -1014,13 +1029,15 @@
   // Returns true when the battery already changed what is on screen —
   // finished the task, or moved to the next one. The caller must not then
   // render the app over it.
-  function record(value) {
-    return Study.choice(screen, value, Date.now() - stepEnteredAt);
+  // label: what the person pressed, as it reads on screen ("Register", "Next", "Back").
+  function record(value, label) {
+    return Study.choice(screen, value, Date.now() - stepEnteredAt, label);
   }
+  const labelOf = el => (el.getAttribute('aria-label') || el.textContent || '').trim().split('\n')[0].trim().slice(0, 60);
 
-  function go(next, value) {
+  function go(next, value, label) {
     if (!SCREENS.includes(next)) return;
-    const handled = record(value != null ? value : next);
+    const handled = record(value != null ? value : next, label);
     if (handled) return;
     screen = next;
     overlay = null;
@@ -1036,12 +1053,12 @@
     //
     // Opening a photo is very often the goal of a route task, so this is
     // one of the places the route can complete.
-    if (record(`open:${photo || kind}`)) return;
+    if (record(`open:${photo || kind}`, 'Photo')) return;
     renderOverlay();
   }
 
   function closeOverlay() {
-    if (record(`close:${openPhoto || overlay}`)) return;
+    if (record(`close:${openPhoto || overlay}`, 'Close')) return;
     overlay = null;
     openPhoto = null;
     renderOverlay();
@@ -1052,13 +1069,21 @@
     if (!t) return;
 
     if (t.closest('[data-close]')) { closeOverlay(); return; }
+    // Like works: value like:p02 (or unlike:p02 when pressed again). Share does nothing: value nothing.
+    if (overlay === 'photo_open' && t.closest('[data-like]')) {
+      const on = !liked.has(openPhoto);
+      if (record(`${on ? 'like' : 'unlike'}:${openPhoto}`, 'Like')) return;
+      if (on) liked.add(openPhoto); else liked.delete(openPhoto);
+      renderOverlay(); return;
+    }
+    if (overlay === 'photo_open' && t.closest('[data-share]')) { record('nothing', 'Share'); return; }
     if (overlay === 'photo_open') return;   // the layer swallows the rest
 
     const photo = t.closest('[data-photo]');
     if (photo) { showOverlay('photo_open', photo.dataset.photo); return; }
 
     const back = t.closest('[data-back]');
-    if (back) { go(back.dataset.back, 'back'); return; }
+    if (back) { go(back.dataset.back, 'back', 'Back'); return; }
 
     const goto = t.closest('[data-goto]');
     if (goto) {
@@ -1072,7 +1097,15 @@
       if (screen === 'register_email' && goto.dataset.goto === 'register_username') {
         signupEmail = (document.querySelector('input[type="email"]') || {}).value || '';
       }
-      go(goto.dataset.goto, goto.dataset.who || undefined);
+      go(goto.dataset.goto, goto.dataset.who || undefined, labelOf(goto));
+      return;
+    }
+
+    // A button that does nothing in the prototype (See more, Follow Jane, Message, New post) is still
+    // a choice the person made: recorded with its label, and value 'nothing' (it led nowhere).
+    const dead = t.closest('button');
+    if (dead && dead.closest('.phone') && !dead.closest('[data-key]') && !dead.dataset.goto) {
+      record('nothing', labelOf(dead));
       return;
     }
 
@@ -1091,7 +1124,7 @@
     const input = e.target.closest && e.target.closest('#search-input');
     if (!input) return;
     searchText = input.value;
-    go('search_results', `search:${searchText}`);
+    go('search_results', `search:${searchText}`, 'Search');
   });
 
   // =====================================================================

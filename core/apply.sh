@@ -3,6 +3,7 @@
 # Run it as: sh core/apply.sh                 (every file in analysis/)
 #        or: sh core/apply.sh analysis/x.sql  (just those)
 # Needs SUPABASE_SECRET_KEY in the Claude cloud environment (setup step 7). Never prints the key.
+# Then it saves and publishes everything (core/save.sh), built or not, so no work is ever lost.
 cd "$(dirname "$0")/.." || exit 1
 URL=$(sed -n "s/^const SUPABASE_URL = '\(.*\)';/\1/p" supabase-config.js)
 case "$URL" in *YOUR-*|"") echo "NOT CONNECTED: supabase-config.js still has the placeholders (setup step 8)."; exit 1;; esac
@@ -46,7 +47,8 @@ for f in $files; do
   why=$(lint "$f")
   [ -n "$why" ] && { echo "NOT BUILT $f: $why"; bad=1; }
 done
-[ $bad = 1 ] && { echo "Fix these files first; nothing was built."; exit 1; }
+save() { sh core/save.sh "Build $(echo $files | sed 's#analysis/##g; s#\.sql##g')"; }
+[ $bad = 1 ] && { echo "Fix these files first; nothing was built."; save; exit 1; }
 left="$files"
 while [ -n "$left" ]; do
   failed=""
@@ -60,10 +62,11 @@ while [ -n "$left" ]; do
   [ "$failed" = "$left" ] && break
   left=$failed
 done
-[ -z "$left" ] && { echo "ALL BUILT"; exit 0; }
+[ -z "$left" ] && { echo "ALL BUILT"; save; exit 0; }
 for f in $left; do
   echo "FAIL $f: $(send "$f" | sed '$d' | python3 -c 'import json,sys
 try: print(json.load(sys.stdin).get("message", "unknown error"))
 except Exception: print("unknown error")')"
 done
+save
 exit 1

@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- The course's up-to-date copy of this page (see core/central.js). -->
+<script src="https://asafbarzilay-web.github.io/data-mindset-template/core/central.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Study Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../supabase-config.js"></script>
+<script src="../core/team.js" data-file="supabase-config.js"></script>
 <script src="../core/course-config.js"></script>
 <script src="../core/course.js"></script>
 <script src="../core/row-limit-guard.js"></script>
@@ -170,7 +172,7 @@
   const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 </script>
 <!-- Your panels, one list per lesson. That file is yours; this page is the course's. -->
-<script src="boards.js"></script>
+<script src="../core/team.js" data-file="dashboard/boards.js"></script>
 <script>
 
   // ---- Dashboards ----------------------------------------------------
@@ -243,12 +245,22 @@
     sessions:   { order: 'started_at' },
     clicks:     { order: 'created_at' },
     selections: { order: 'created_at' },
-    identities: { order: 'created_at' }
+    identities: { order: 'created_at' },
+    task_runs:  { order: 'started_at', optional: true }   // from lesson 4; older databases don't have it yet
   };
+  const missing = new Set();
+  // A table that may not exist yet is shown only once it does.
+  for (const [t, o] of Object.entries(TABLES)) if (o.optional) missing.add(t);
+  async function findTables() {
+    for (const t of [...missing]) {
+      const { error } = await db.from(t).select('*', { count: 'exact', head: true });
+      if (!error) missing.delete(t);
+    }
+  }
   let current = 'sessions';
 
   function renderTabs() {
-    $('tabs').innerHTML = Object.keys(TABLES).map(t =>
+    $('tabs').innerHTML = Object.keys(TABLES).filter(t => !missing.has(t)).map(t =>
       `<button data-t="${t}" class="${t === current ? 'on' : ''}">${t}</button>`).join('');
   }
 
@@ -281,6 +293,23 @@
     return out;
   }
 
+  // A link's filters become ordinary column filters (the ▾ menus show them ticked).
+  async function filterFromLink(table, params) {
+    const v = viewOf(table); v.filters = {};
+    for (const [c, list] of params) {
+      const keys = [];
+      for (const k of list.split(',').map(x => x.trim()).filter(Boolean)) {
+        if (!k.endsWith('*')) { keys.push(k); continue; }
+        for (let from = 0; ; from += 999) {   // every value starting so, from the database
+          const { data, error } = await db.from(table).select(c).like(c, k.slice(0, -1).replace(/[%_]/g, m => '\\' + m) + '%').range(from, from + 998);
+          if (error) throw error;
+          data.forEach(r => keys.includes(String(r[c])) || keys.push(String(r[c]))); if (data.length < 999) break;
+        }
+      }
+      v.filters[c] = keys.length ? keys : ['(no match)'];
+    }
+  }
+
   async function loadTable() {
     renderTabs();
     const v = viewOf(current);
@@ -297,7 +326,11 @@
       if (error) { $('table').innerHTML = `<div class="empty bad">${esc(error.message)}</div>`; return; }
       data = data.concat(page); if (page.length < 999) break;
     }
-    if (data.length && !v.cols) v.cols = Object.keys(data[0]);
+    if (data.length && !v.cols) {
+      v.cols = Object.keys(data[0]);
+      // label reads before value: what the person pressed, then what the system recorded.
+      if (v.cols.includes('label') && v.cols.includes('value')) { v.cols = v.cols.filter(c => c !== 'label'); v.cols.splice(v.cols.indexOf('value'), 0, 'label'); }
+    }
     const on = Object.entries(v.filters).filter(([, k]) => k);
     $('table-count').innerHTML = `${(count ?? 0).toLocaleString()} rows${on.length ? ' match the filters' : ' in total'} · showing ${data.length.toLocaleString()} · show
       <select id="raw-show">${[50, 500, 'all'].map(n => `<option value="${n}" ${String(v.show) === String(n) ? 'selected' : ''}>${n}</option>`).join('')}</select>
@@ -404,7 +437,7 @@
     $('areas').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.area === area));
     if (area === 'raw') loadTable();
     if (area === 'boards') renderBoard();
-    history.replaceState(null, '', '#' + (area === 'boards' ? board : area));
+    history.replaceState(null, '', '#' + (area === 'boards' ? board : area === 'raw' ? `raw/${current}` : area));
   }
 
   async function show() {
@@ -412,10 +445,18 @@
     $('login-page').hidden = !!session;
     $('dash').hidden = !session;
     if (!session) return;
-    const h = location.hash.slice(1);
-    if (h && h !== 'raw' && h !== 'checks') board = h;
+    // #unit-02 opens a lesson board; #raw opens Raw data; #raw/selections opens one of its tables.
+    // #raw/selections?step=search&value=search:* opens it filtered (the assistant's "see them" links):
+    // a column's values separated by commas; a value ending in * means every value starting so.
+    const [h, query] = location.hash.slice(1).split('?'), [area, table] = h.split('/');
+    await findTables();
+    if (area === 'raw' && TABLES[table]) {
+      current = table;
+      if (query) { try { await filterFromLink(table, new URLSearchParams(query)); } catch {} }
+    }
+    if (h && area !== 'raw' && h !== 'checks') board = h;
     await loadLessons();
-    showArea(h === 'raw' ? h : 'boards');
+    showArea(area === 'raw' ? 'raw' : 'boards');
     recording();
   }
 
@@ -428,7 +469,9 @@
   $('sign-out').addEventListener('click', async () => { await db.auth.signOut(); show(); });
   $('areas').addEventListener('click', (e) => { const b = e.target.closest('[data-area]'); if (b) showArea(b.dataset.area); });
   $('lesson-list').addEventListener('click', (e) => { const b = e.target.closest('[data-b]'); if (b) { board = b.dataset.b; showArea('boards'); } });
-  $('tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) { current = b.dataset.t; loadTable(); } });
+  $('tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (b) { current = b.dataset.t; history.replaceState(null, '', `#raw/${current}`); loadTable(); } });
+  // A new link while the dashboard is open (a "see them" link from the assistant).
+  window.addEventListener('hashchange', () => { if (location.hash.includes('?')) show(); });
   show();
 </script>
 </body>

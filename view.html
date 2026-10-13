@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- The course's up-to-date copy of this page (see core/central.js). -->
+<script src="https://asafbarzilay-web.github.io/data-mindset-template/core/central.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Course page</title>
 <!-- Shows one of the course's written files (.md) as a page: view.html?f=<path> -->
@@ -72,9 +74,11 @@
         if (m) t = m[1]; else if (t && line.startsWith('(')) rows[t] = (rows[t] || 0) + 1;
       }
       note.innerHTML = 'Then in Supabase: <b>SQL Editor → New query</b>, paste (⌘V), <b>Run</b>. It worked if the result shows ' +
-        ['sessions', 'clicks', 'selections', 'identities'].map(k => `${k} <b>${(rows[k] || 0).toLocaleString()}</b>`).join(', ') + '.';
+        ['sessions', 'clicks', 'selections', 'identities', 'task_runs'].filter(k => k !== 'task_runs' || rows[k]).map(k => `${k} <b>${(rows[k] || 0).toLocaleString()}</b>`).join(', ') + '.';
       btn.disabled = false;
-    }).catch(e => { st.innerHTML = `<span class="bad">Could not load the practice data. ${e.message}</span>`; });
+    }).catch(e => { st.innerHTML = /task/i.test(e.message)
+      ? `<span class="bad">${e.message}</span> Then come back here: the button gets your data, made from your task.`
+      : `<span class="bad">Could not load the practice data. ${e.message}</span>`; });
     btn.addEventListener('click', async () => {
       try { await navigator.clipboard.writeText(sql); st.innerHTML = '<span class="ok">Copied, all of it.</span>'; }
       catch { st.innerHTML = '<span class="bad">Your browser blocked the copy. Try again.</span>'; }

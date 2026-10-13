@@ -134,11 +134,26 @@ window.Study = (function () {
     }, true);
   }
 
-  // The app reports a choice: on which screen, what was chosen, and how
-  // long the person had been on that screen.
-  function choice(step, value, durationMs) {
-    write('selections', { step, value: String(value), duration_ms: Math.max(0, durationMs | 0) });
+  // The app reports a choice: on which screen, what the person pressed (label, as it reads on screen),
+  // what it recorded (value: usually the screen it led to), and how long they had been on that screen.
+  // Returns false at once (the app reads it as "nothing else changed the screen"); the write runs on its own.
+  function choice(step, value, durationMs, label) {
+    const row = { step, value: String(value), duration_ms: Math.max(0, durationMs | 0) };
+    if (!label) { write('selections', row); return false; }
+    row.label = String(label).slice(0, 80);
+    writeChoice(row);
     return false;
+  }
+  // A database set up before `label` existed has no such column: keep the choice, drop the label.
+  async function writeChoice(row) {
+    if (TRACKING_OFF || !window.supabaseClient) return;
+    const sid = sessionId;
+    try {
+      await sessionReady;
+      const { error } = await supabaseClient.from('selections').insert({ session_id: sid, ...row });
+      if (error && /label/.test(error.message || '')) { const { label, ...rest } = row; write('selections', rest); }
+      else if (error) console.error('selections not recorded', error);
+    } catch (err) { console.error('selections not recorded', err); }
   }
 
   // Someone signed in. The account is scrambled before it leaves the

@@ -35,8 +35,12 @@
   },
   {
     "n": 4,
+    "unit": "unit-04",
+    "checker": "lesson-04",
     "title": "Tasks: success and time",
-    "question": "Can people do what the app is for, and how long does it take?"
+    "question": "Can people do what the app is for, and how long does it take?",
+    "slides": "slides/04-tasks/slides.html",
+    "data": "lesson-04"
   },
   {
     "n": 5,

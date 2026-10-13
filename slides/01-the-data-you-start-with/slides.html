@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<!-- The course's up-to-date copy of this page (see core/central.js). -->
+<script src="https://asafbarzilay-web.github.io/data-mindset-template/core/central.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Data You Start With</title>
 <link rel="stylesheet" href="../deck.css">
@@ -148,8 +150,9 @@
     <table class="props">
       <tr><th>column</th><th>type</th><th>what it holds</th><th>example</th><th>watch out</th></tr>
         <tr><td class="c key">session_id</td><td><span class="type">id</span></td><td>The visit this choice belongs to.</td><td class="ex">a41f…</td><td class="w"></td></tr>
-        <tr><td class="c">step</td><td><span class="type">text</span></td><td>The screen the choice was made on.</td><td class="ex">home</td><td class="w"></td></tr>
-        <tr><td class="c">value</td><td><span class="type">text</span></td><td>What was chosen: an item, an answer, a destination.</td><td class="ex">article-14</td><td class="w"></td></tr>
+        <tr><td class="c">step</td><td><span class="type">text</span></td><td>The screen the choice was made on.</td><td class="ex">start</td><td class="w"></td></tr>
+        <tr><td class="c">label</td><td><span class="type">text</span></td><td>What the person pressed, as it reads on screen.</td><td class="ex">Register</td><td class="w"></td></tr>
+        <tr><td class="c">value</td><td><span class="type">text</span></td><td>What the system recorded: the screen it led to, what was opened or searched, or <i>nothing</i> for a button that does nothing.</td><td class="ex">register_email</td><td class="w">Not what they saw: pressing Register records the next screen's name.</td></tr>
         <tr><td class="c">duration_ms</td><td><span class="type">number</span></td><td>Time on that screen before choosing, in thousandths of a second.</td><td class="ex">5200</td><td class="w">Includes reading and hesitating. 5,200 = 5.2 seconds.</td></tr>
         <tr><td class="c">created_at</td><td><span class="type">time</span></td><td>When the choice was made.</td><td class="ex">10:02:06</td><td class="w"></td></tr>
     </table>
