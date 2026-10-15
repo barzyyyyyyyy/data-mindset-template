@@ -29,6 +29,22 @@
   .btn.ghost { border: 1px solid #55554F; color: #fff; }
   .btn.off { border: 1px dashed #4A4A45; color: #77776F; cursor: default; }
   .now .opens { color: #F6B38A; }
+  .path { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 10px; }
+  .path li { display: grid; grid-template-columns: 30px 1fr auto; gap: 12px; align-items: center; background: #2A2A27; border-radius: 12px; padding: 12px 14px; }
+  .path .k { width: 28px; height: 28px; border-radius: 50%; background: #3A3A36; color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+  .path li.here { background: #fff; color: #1C1C1A; }
+  .path li.here .k { background: #C2410C; }
+  .path li.done .k { background: #1F7A3F; }
+  .path b { font-size: 15.5px; }
+  .path .sub { font-size: 13.5px; color: #B8B8B2; margin-top: 2px; line-height: 1.45; }
+  .path li.here .sub { color: #4A4A45; }
+  .path .say { font-style: italic; }
+  .path a.act, .path button.act { background: #fff; color: #1C1C1A; border: 0; border-radius: 9px; padding: 8px 13px; font: inherit; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer; white-space: nowrap; }
+  .path li.here a.act, .path li.here button.act { background: #1C1C1A; color: #fff; }
+  .path .act.off { background: transparent; color: #77776F; border: 1px dashed #4A4A45; cursor: default; }
+  .path .minor { font-size: 13px; color: inherit; opacity: .75; }
+  .path li.here .minor { color: #C2410C; opacity: 1; }
+  @media (max-width: 600px) { .path li { grid-template-columns: 30px 1fr; } .path li > :last-child { grid-column: 2; justify-self: start; } }
   .update { background: #EEF4FF; border: 1px solid #C7D7FE; border-radius: 12px; padding: 14px 18px; font-size: 15px; line-height: 1.55; margin: 0 0 16px; }
   .update a.go { display: inline-block; margin: 6px 0 2px; background: #1C1C1A; color: #fff; text-decoration: none; font-weight: 600; padding: 7px 14px; border-radius: 8px; }
   .update small { display: block; color: #6B6B66; }
@@ -91,42 +107,34 @@
   <div class="top">
     <div>
       <h1>Your study platform</h1>
-      <p class="lead">An app that records how people use it, and a dashboard you grow into one whose every number you can prove.</p>
+      <p class="lead">An app that records how people use it, and a dashboard where every number is one you can prove.</p>
     </div>
     <a class="setup" id="setup" href="units/setup.html" hidden><b>One-time setup</b><span>Do this before lesson 1 →</span></a>
-    <details class="assist" id="assist" hidden>
+    <details class="assist" id="assist">
       <summary><b>Your AI assistant</b><span>How to start it ↓</span></summary>
       <ol>
         <li>Claude app → <b>Code</b> → <b>+ New</b></li>
-        <li>Check the chips say <b>Data-mindset</b> and <b class="team">your repository</b></li>
-        <li>Ask: <i>"What are we working on?"</i></li>
+        <li>Check the chips say <b>Data-mindset</b> and <b class="team">your repository</b>. If not: the cloud chip → <b>Cloud → Data-mindset</b>, and <b>+ Select repository…</b></li>
+        <li>Say what the lesson card says, e.g. <i>"Let's practice lesson 3"</i></li>
       </ol>
     </details>
   </div>
 
   <div class="update" id="update" hidden></div>
-  <div class="unset" id="unset" hidden><b>Not connected to a database yet.</b> This copy can't record or show anything
-    until the one-time setup is done. <a href="units/setup.html">Follow the one-time setup →</a></div>
+  <div class="unset" id="unset" hidden><b>Not connected to a database yet.</b> Finish
+    <a href="units/setup.html">the one-time setup</a> first.</div>
   <div class="now" id="now">Loading…</div>
 
   <h2>Your tools</h2>
   <div class="grid">
-    <a class="tool" href="dashboard/"><b>Your dashboard</b>
-      <span>Everything you build goes here.</span></a>
+    <a class="tool" href="dashboard/"><b>Dashboards</b>
+      <span>One board per lesson: everything you build goes here.</span></a>
     <div class="tool"><b>The app</b>
       <div class="links"><a href="app/?test=1">Test run<small>your own visits, marked as tests</small></a>
         <a href="app/">Participant link<small>what you share with real people</small></a></div></div>
-    <a class="tool" href="units/database-map.html"><b>The database</b>
-      <span>The four tables and every column.</span></a>
-  </div>
-  <div id="steps-block">
-  <h2>Start your AI assistant</h2>
-  <ol class="steps">
-    <li><span class="h">Open the Claude app.</span> Click <b>Code</b>, then <b>+ New</b>.</li>
-    <li><span class="h">Check it's yours.</span> Above the message box: <b>Data-mindset</b> and <b class="team">your repository</b>.
-      If not, click the cloud chip → <b>Cloud → Data-mindset</b>, and <b>+ Select repository…</b></li>
-    <li><span class="h">Start.</span> Ask: <i>"What are we working on?"</i> It should answer with your current lesson.</li>
-  </ol>
+    <div class="tool"><b>Raw data</b>
+      <div class="links"><a href="dashboard/#raw">The tables<small>exactly what the app recorded, row by row</small></a>
+        <a href="units/database-map.html">The database map<small>every table and column on one page</small></a></div></div>
   </div>
 
   <h2>Lessons</h2>
@@ -151,8 +159,8 @@
           const el = document.getElementById('update');
           el.innerHTML = `<b>A course update is waiting</b> (${c.ahead_by} change${c.ahead_by === 1 ? '' : 's'}).<br>
             <a class="go" href="https://github.com/${owner}/${repo}" target="_blank" rel="noopener">Update now</a>
-            <small>It opens your repository on GitHub: click <b>Sync fork</b>, then <b>Update branch</b>. Your site refreshes about
-            a minute later. (Or start a new session with your assistant: it updates by itself.)</small>`;
+            <small>It opens your repository: click <b>Sync fork</b>, then <b>Update branch</b>. Your site refreshes a minute later.
+            (A new assistant session updates it by itself.)</small>`;
           el.hidden = false;
         }).catch(() => {});
     }
@@ -182,26 +190,42 @@
     // The lesson in focus: the current one, or, once it is done, the next one (opening in class).
     const focus = isDone(cur) && next ? next : cur;
     const open = focus === cur;
-    const step = (label, href, primary, enabled) => enabled
-      ? `<a class="btn ${primary ? 'light' : 'ghost'}" href="${href}">${label}</a>`
-      : `<span class="btn off" title="Opens in class">${label}</span>`;
+    // The lesson as one path: slides, then the guided walkthrough with your assistant, then the questions.
+    const w = work[focus.checker] || {};
+    const qDone = !!w.memoSubmitted, qStarted = rightSoFar(focus) > 0;
+    const here = !open ? 0 : qDone ? 0 : qStarted ? 3 : 2;   // where the team is: walkthrough until a question is right
+    const say = `Let's practice lesson ${focus.n}`;
+    const li = (k, cls, title, sub, act) => `<li class="${cls}"><span class="k">${cls === 'done' ? '✓' : k}</span><div><b>${title}</b><div class="sub">${sub}</div></div>${act}</li>`;
+    const steps = [
+      focus.slides && li(1, !focus.checker ? (open ? 'here' : '') : open && here > 1 ? 'done' : '', 'Class slides', 'In class. Open them again any time.',
+        `<a class="act" href="${esc(focus.slides)}">Slides</a>`),
+      focus.checker && li(2, !open ? '' : here === 2 ? 'here' : here > 2 || qDone ? 'done' : '', 'Guided walkthrough, with your assistant',
+        open ? `Click <b>+ New</b> and paste <span class="say">"${say}"</span> (the button copies it). Your assistant takes you through the practice data and your panels, step by step. <a class="minor" href="${brief(focus)}">Overview</a>`
+             : 'Opens in your next class.',
+        open ? `<a class="act" href="https://claude.ai/code" target="_blank" rel="noopener" data-say="${esc(say)}">Open your assistant ↗</a>` : '<span class="act off">Opens in class</span>'),
+      focus.checker && li(3, !open ? '' : qDone ? 'done' : here === 3 ? 'here' : '', 'Questions and memo',
+        !open ? 'Opens in your next class.' : qDone ? 'Done: questions answered, memo submitted.'
+          : qStarted ? `${rightSoFar(focus)} right so far. Keep answering, using the numbers on your board, then write the memo.`
+          : 'Answer this lesson\'s questions, using the numbers on your board. Then write a short memo.',
+        open ? `<a class="act" href="${checker(focus)}">Questions</a>` : '<span class="act off">Opens in class</span>')
+    ].filter(Boolean).join('');
     document.getElementById('now').innerHTML = `
       <div class="label">${open ? 'You are on' : 'Up next'} · Lesson ${focus.n}</div>
       <h3>${esc(focus.title)}</h3>
       <p>${esc(focus.question)}${open ? '' : ' <span class="opens">Opens in your next class.</span>'}</p>
-      <div class="actions">
-        ${focus.slides ? step('1 · Class slides', esc(focus.slides), true, true) : ''}
-        ${focus.checker ? step('2 · Guided walkthrough', brief(focus), open && !focus.slides, open) : ''}
-        ${focus.checker ? step('3 · Questions', checker(focus), false, open) : ''}
-      </div>
+      <ol class="path">${steps}</ol>
       ${lessons.filter(unfinished).map(l => `<p class="again">Lesson ${l.n} isn't finished yet. You can still finish it: <a href="${checker(l)}">its questions and memo</a>.</p>`).join('')}
       ${open ? '' : `<p class="again">✓ Lesson ${cur.n} done. Go back over it: ${[cur.slides && `<a href="${esc(cur.slides)}">slides</a>`, cur.checker && `<a href="${brief(cur)}">walkthrough</a>`, cur.checker && `<a href="${checker(cur)}">questions</a>`].filter(Boolean).join(' · ')}</p>`}`;
+    // Opening the assistant also copies what to say to it: the link opens Claude Code, the words are ready to paste.
+    document.getElementById('now').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-say]'); if (!b) return;
+      navigator.clipboard.writeText(b.dataset.say).catch(() => {});
+    });
     // Setup is needed before lesson 1 only: lesson 1 can't be done without it.
     // Before lesson 1 is done: setup in the corner and the assistant's steps in full. After: a small tip.
     const started = cur.n > 1 || isDone(cur);
     document.getElementById('setup').hidden = started;
-    document.getElementById('assist').hidden = !started;
-    document.getElementById('steps-block').hidden = started;
+    void started;
     document.getElementById('lessons').innerHTML = lessons.map(l => `
       <div class="lesson ${l === focus ? 'current' : ''} ${isDone(l) ? 'done' : ''} ${l.unit ? '' : 'later'}">
         <div class="n">${isDone(l) ? '✓' : l.n}</div>

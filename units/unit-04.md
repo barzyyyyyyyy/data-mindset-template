@@ -1,5 +1,28 @@
 # Lesson 4 · Tasks: success and time
 
+**The question:** can people do what the app is for, and how long does it take?
+
+## How it goes
+
+1. **[Slides](slides/04-tasks/slides.html)**, in class.
+2. **Your assistant leads the practice.** In the Claude app: **Code → + New**, check the chips say
+   **Data-mindset** and your repository, and say ***"Let's practice lesson 4"***.
+3. **[Lesson 4 · Questions](checker/?lesson=lesson-04)**, answered from [your dashboard](dashboard/#unit-04), then the memo.
+
+## What you'll build
+
+Build on [your dashboard's **lesson 4** board](dashboard/#unit-04):
+- **Your task**: pick a suggested one or say your own, and approve its best route. Your practice data is made from it.
+- **Your task's runs**, **who succeeded** (directly, indirectly, not), and **time to success**.
+
+## The practice data
+
+Your assistant tells you when. Then copy it here and run it in Supabase's SQL Editor.
+
+[the practice data](data/copy.html?f=lesson-04)
+
+<!-- For your assistant: the page stops here. Everything below is your brief for this lesson; the team doesn't see it on the page. -->
+
 **The question this lesson asks:** can people do what the app is for, and how long does it take?
 
 ## 0. The class slides
@@ -10,7 +33,7 @@ walkthrough below assumes you have been through them.
 ## 1. Your task
 
 > **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
-> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 4"*.
+> check the chip above the message box says **Data-mindset**, and type: *"Let's practice lesson 4"*.
 > It walks you through everything below, one step at a time.
 
 A usability task is a goal you give a participant: *"Find a photo of a dog and open it."* Your team

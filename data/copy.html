@@ -75,7 +75,9 @@
       }
       document.getElementById('copy').disabled = false;
     })
-    .catch(e => { document.getElementById('size').innerHTML = `<span class="bad">${e.message}</span>`; });
+    .catch(e => { document.getElementById('size').innerHTML = /task/i.test(e.message)
+      ? '<b>Not yet.</b> This lesson\'s data is made from your task. Save it with your assistant first, then come back.'
+      : `<span class="bad">${e.message}</span>`; });
   document.getElementById('copy').addEventListener('click', async () => {
     const out = document.getElementById('status');
     try {

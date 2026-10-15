@@ -1,5 +1,24 @@
 # Lesson 2 · People vs sessions
 
+**The question:** how many people used your app, and how many came back?
+
+## How it goes
+
+1. **[Slides](slides/02-people-vs-sessions/slides.html)**, in class.
+2. **Your assistant leads the practice.** In the Claude app: **Code → + New**, check the chips say
+   **Data-mindset** and your repository, and say ***"Let's practice lesson 2"***.
+3. **[Lesson 2 · Questions](checker/?lesson=lesson-02)**, answered from [your dashboard](dashboard/#unit-02), then the memo.
+
+## What you'll build
+
+Build on [your dashboard's **lesson 2** board](dashboard/#unit-02):
+- **Visits**, **browsers**, and **people** (your best estimate of how many humans).
+- **Came back**: how many people visited more than once, and **visits per person**.
+
+Same practice data as lesson 1.
+
+<!-- For your assistant: the page stops here. Everything below is your brief for this lesson; the team doesn't see it on the page. -->
+
 **The question this lesson asks:** how many people used your app, and how many came back?
 
 ## 0. The class slides
@@ -23,7 +42,7 @@ own test runs, and any real visits, are never touched.
 ## 2. Build: "Who used the app?"
 
 > **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
-> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 2"*.
+> check the chip above the message box says **Data-mindset**, and type: *"Let's practice lesson 2"*.
 > It walks you through everything below, one step at a time.
 
 Build these numbers on [your dashboard's **lesson 2** board](dashboard/#unit-02), **each in its own panel**:

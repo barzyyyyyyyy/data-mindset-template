@@ -1,5 +1,28 @@
 # Lesson 8 · Segmentation
 
+**The question:** do some groups of visitors do better than others, and is the difference real?
+
+## How it goes
+
+1. **[Slides](slides/08-segmentation/slides.html)**, in class.
+2. **Your assistant leads the practice.** In the Claude app: **Code → + New**, check the chips say
+   **Data-mindset** and your repository, and say ***"Let's practice lesson 8"***.
+3. **[Lesson 8 · Questions](checker/?lesson=lesson-08)**, answered from [your dashboard](dashboard/#unit-08), then the memo.
+
+## What you'll build
+
+Build on [your dashboard's **lesson 8** board](dashboard/#unit-08):
+- **Activation**, overall: visits, how many got into the app, the rate.
+- **A segment control** (device, source, new or returning) that every number follows, with sizes and warnings.
+
+## The practice data
+
+Your assistant tells you when. Then copy it here and run it in Supabase's SQL Editor.
+
+[the practice data](data/copy.html?f=lesson-08)
+
+<!-- For your assistant: the page stops here. Everything below is your brief for this lesson; the team doesn't see it on the page. -->
+
 **The question this lesson asks:** do some groups of visitors do better than others, and is
 the difference real?
 
@@ -19,7 +42,7 @@ This replaces the previous practice data. Your own test runs and real visits sta
 ## 2. Build: segments, everywhere
 
 > **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
-> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 8"*.
+> check the chip above the message box says **Data-mindset**, and type: *"Let's practice lesson 8"*.
 > It walks you through everything below, one step at a time.
 
 The metric for this lesson is **activation**: a visit in which the person got into the app.

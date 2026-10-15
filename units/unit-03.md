@@ -1,5 +1,28 @@
 # Lesson 3 · Funnels and drop-off
 
+**The question:** where do people give up on registration?
+
+## How it goes
+
+1. **[Slides](slides/03-funnels/slides.html)**, in class.
+2. **Your assistant leads the practice.** In the Claude app: **Code → + New**, check the chips say
+   **Data-mindset** and your repository, and say ***"Let's practice lesson 3"***.
+3. **[Lesson 3 · Questions](checker/?lesson=lesson-03)**, answered from [your dashboard](dashboard/#unit-03), then the memo.
+
+## What you'll build
+
+Build on [your dashboard's **lesson 3** board](dashboard/#unit-03):
+- **The start screen**: Log in, Register, or left without choosing.
+- **The registration funnel**: each step, its % of the step before and of the first step.
+
+## The practice data
+
+Your assistant tells you when. Then copy it here and run it in Supabase's SQL Editor.
+
+[the practice data](data/copy.html?f=lesson-03)
+
+<!-- For your assistant: the page stops here. Everything below is your brief for this lesson; the team doesn't see it on the page. -->
+
 **The question this lesson asks:** where do people give up on registration?
 
 ## 0. The class slides
@@ -17,7 +40,7 @@ practice data; your own test runs and real visits stay.
 ## 2. Build: the start screen, and the registration funnel
 
 > **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
-> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 3"*.
+> check the chip above the message box says **Data-mindset**, and type: *"Let's practice lesson 3"*.
 > It walks you through everything below, one step at a time.
 
 Every visit opens on the **start screen** (`start`), and goes one of three ways: **Log in**, for

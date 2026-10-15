@@ -47,67 +47,59 @@
 <div class="wrap">
   <a class="back" href="../">← Your study platform</a>
   <h1>One-time setup</h1>
-  <p class="lead"><b>9 short steps, about 15 minutes.</b> Once, before lesson 1. Three parts: your copy of the platform on GitHub,
-    your database on Supabase, and your AI assistant in Claude. Nothing to install.</p>
-  <div class="before"><b>Before you start: what you need</b>
-    <ul><li><b>A paid Claude plan (Pro or higher), which includes Claude Code.</b> Your AI assistant runs on it; the free
-      plan doesn't include it, and without it you can't do the course.</li>
+  <p class="lead"><b>9 short steps, about 15 minutes.</b> Once, before lesson 1. Nothing to install.</p>
+  <div class="before"><b>What you need</b>
+    <ul><li><b>A paid Claude plan (Pro or higher).</b> It includes Claude Code, which runs your assistant; the free plan doesn't.</li>
       <li>A GitHub account and a Supabase account: both free.</li></ul></div>
 
   <div class="part">Part 1 · Your copy of the platform (GitHub)</div>
 
   <div class="step"><span class="num">1</span><h3>Sign in to GitHub</h3>
-    <p>At <a href="https://github.com" target="_blank" rel="noopener">github.com</a>. If you don't have an account, create a free one.</p></div>
+    <p>At <a href="https://github.com" target="_blank" rel="noopener">github.com</a>: sign in, or create a free account.</p></div>
 
   <div class="step"><span class="num">2</span><h3>Make your own copy (a "fork")</h3>
     <ol><li>Open the course repository: <a href="https://github.com/asafbarzilay-web/data-mindset-template" target="_blank" rel="noopener">github.com/asafbarzilay-web/data-mindset-template</a></li>
-      <li>Click <b>Fork</b> (top right, circled below), then <b>Create fork</b>. </li></ol>
-    <p class="warn">Be patient here: GitHub can take <b>several minutes</b> to finish the copy, showing "Forking…" the whole
-      time. Refreshing doesn't speed it up. Wait until the page changes by itself (or check after 5 minutes).</p>
+      <li>Click <b>Fork</b> (top right, circled below), then <b>Create fork</b>.</li></ol>
+    <p class="warn">GitHub can take <b>several minutes</b>, showing "Forking…". Refreshing doesn't help: wait until the page changes.</p>
     <img src="img/github-fork.jpg" alt="The Fork button">
-    <p class="see">a repository named <code>your-name/data-mindset-template</code>, with <i>"forked from…"</i> under its name. This is yours: every step from now on happens there.</p>
-    <p class="note">Working as a group? One of you forks; then <b>Settings → Collaborators → Add people</b> to add the others.</p></div>
+    <p class="see">a repository named <code>your-name/data-mindset-template</code>, with <i>"forked from…"</i> under its name. This is yours: every later step happens there.</p>
+    <p class="note">Working as a group? One of you forks, then <b>Settings → Collaborators → Add people</b>.</p></div>
 
   <div class="step"><span class="num">3</span><h3>Publish your site</h3>
-    <ol><li>Go to <b>your fork</b>, the repository you just created: <code>github.com/your-name/data-mindset-template</code>.
-        Under its name it says <i>"forked from asafbarzilay-web/data-mindset-template"</i>. (Not the course's original.)</li>
-      <li>Click <b>Settings</b> (the last tab along the top), then <b>Pages</b> in the menu on the left.</li>
+    <ol><li>Open your fork: <code>github.com/your-name/data-mindset-template</code> (it says <i>"forked from…"</i> under its name).</li>
+      <li>Click <b>Settings</b> (last tab), then <b>Pages</b> (left menu).</li>
       <li>Under <b>Build and deployment</b>: Source <b>Deploy from a branch</b>, branch <b>main</b>, folder <b>/ (root)</b>. Click <b>Save</b>.</li>
-      <li>Wait a minute and refresh the page.</li></ol>
-    <p class="see">"Your site is live at <code>https://your-name.github.io/data-mindset-template/</code>". That's your site; your assistant finds its address by itself later.</p>
-    <p class="note">If Pages says <i>"Upgrade or make this repository public"</i>, you are not on your fork: go back to the first point.</p>
+      <li>Wait a minute and refresh.</li></ol>
+    <p class="see">"Your site is live at <code>https://your-name.github.io/data-mindset-template/</code>". That's your site.</p>
+    <p class="note">If Pages says <i>"Upgrade or make this repository public"</i>, you're not on your fork.</p>
     <img src="../slides/00-tools-and-concepts/img/github-pages.jpg" alt="GitHub Pages settings"></div>
 
   <div class="part">Part 2 · Your database (Supabase)</div>
 
   <div class="step"><span class="num">4</span><h3>Create a project</h3>
-    <ol><li>At <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a>, sign in (with your GitHub account is easiest).</li>
-      <li>First time on Supabase? It asks you to create an <b>organization</b>: name it with your own name, type
-        <b>Personal</b>, plan <b>Free</b>.</li>
-      <li>Click <b>New project</b> and fill in:
-        <br>Project name: <code>data-mindset</code>
-        <br>Database password: click <b>Generate a password</b>, and save it in your password manager
+    <ol><li>At <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a>, sign in (with GitHub is easiest).</li>
+      <li>First time? It asks for an <b>organization</b>: your own name, <b>Personal</b>, <b>Free</b>.</li>
+      <li>Click <b>New project</b>:
+        <br>Name: <code>data-mindset</code>
+        <br>Password: <b>Generate a password</b>, and save it
         <br>Region: <b>Central EU (Frankfurt)</b>
-        <br>Security: leave <b>Enable Data API</b> ticked (your dashboard needs it). The other two boxes don't matter
-        for this course: leave them as they are.</li>
-      <li>Click <b>Create new project</b> and wait until it's ready (a minute or two).</li></ol>
+        <br>Leave <b>Enable Data API</b> ticked; the other boxes don't matter.</li>
+      <li>Click <b>Create new project</b> and wait a minute or two.</li></ol>
     <p class="see">the project's home page, with its address <code>https://….supabase.co</code> near the top.</p></div>
 
   <div class="step"><span class="num">5</span><h3>Create the tables</h3>
-    <ol><li>Click this button, here on this page: <button class="copy" id="copy-setup" disabled>Copy the setup</button> <span id="copy-status" class="copied"></span><br><span class="muted">Not Supabase's own <b>Copy</b> button next to the project address: that one copies the address and keys, which this step doesn't need.</span></li>
-      <li>In Supabase, open the <b>SQL Editor</b>: it's in the left sidebar (hover over the icons to see their names; it looks
-        like <code>&gt;_</code>). Click <b>New query</b>, paste (⌘V), and click <b>Run</b>. If it warns about destructive operations, confirm: the setup only creates what is missing.</li></ol>
+    <ol><li>Click here, on this page: <button class="copy" id="copy-setup" disabled>Copy the setup</button> <span id="copy-status" class="copied"></span><br><span class="muted">Not Supabase's own <b>Copy</b> button: that one copies the address and keys.</span></li>
+      <li>In Supabase, open the <b>SQL Editor</b> (left sidebar, the <code>&gt;_</code> icon). Click <b>New query</b>, paste (⌘V), <b>Run</b>. If it warns about destructive operations, confirm: it only creates what's missing.</li></ol>
     <p class="see">a small result table listing <code>sessions</code>, <code>clicks</code>, <code>selections</code>, <code>identities</code>.</p></div>
 
   <div class="step"><span class="num">6</span><h3>Create your sign-in for the dashboard</h3>
-    <ol><li>In the left sidebar, open <b>Authentication</b> (the icon of a person; hover to see names), then
-        <b>Users → Add user → Create new user</b>.</li>
-      <li>Your email and a password you choose. Keep <b>Auto Confirm User</b> ticked. Click <b>Create user</b>.</li></ol></div>
+    <ol><li>In the left sidebar: <b>Authentication → Users → Add user → Create new user</b>.</li>
+      <li>Your email and a password you choose. Keep <b>Auto Confirm User</b> ticked, then <b>Create user</b>.</li></ol></div>
 
   <div class="part">Part 3 · Your AI assistant (Claude)</div>
 
   <div class="step"><span class="num">7</span><h3>Start your assistant in the cloud</h3>
-    <p class="note" style="margin-top:0">No <b>Code</b> tab or no <b>Cloud</b> option? Your plan doesn't include Claude Code (see <i>Before you start</i>).</p>
+    <p class="note" style="margin-top:0">No <b>Code</b> tab, or no <b>Cloud</b> option? Your plan doesn't include Claude Code.</p>
 
     <div class="sub">A · Create the environment</div>
     <ol><li>In the Claude app: <b>Code → + New</b>.</li>
@@ -115,50 +107,46 @@
       <li>Name: <code>Data-mindset</code>. Network access: <b>Full</b>.</li></ol>
     <img src="../slides/00-tools-and-concepts/img/claude-cloud-menu.jpg" alt="Choosing Cloud" style="max-width:360px">
 
-    <div class="sub">B · Add your secret key (still in the same form)</div>
-    <ol><li>In another tab, in Supabase: <b>Project Settings → API Keys → Secret keys</b>. Copy the key named <code>default</code>.</li>
-      <li>Back in the form, in <b>Environment variables</b>, type this and paste your key right after the <code>=</code>:
+    <div class="sub">B · Add your secret key (same form)</div>
+    <ol><li>In Supabase: <b>Project Settings → API Keys → Secret keys</b>. Copy the key named <code>default</code>.</li>
+      <li>In the form's <b>Environment variables</b>, type this, pasting your key after the <code>=</code>:
         <div class="line">SUPABASE_SECRET_KEY=<span>sb_secret_…</span></div></li>
       <li>Click <b>Add environment</b>.</li></ol>
     <img src="../slides/00-tools-and-concepts/img/claude-env-form.jpg" alt="The environment form: name, network access, environment variables" style="max-width:420px">
-    <p class="note">The form, with the box for your key circled. The grey text in it is only an example: type over it.</p>
-    <p class="warn">This key opens your whole database. Put it only here: never in the chat.</p>
+    <p class="note">The grey text in the form is only an example: type over it.</p>
+    <p class="warn">This key opens your whole database: put it only here, never in the chat.</p>
 
     <div class="sub">C · Pick your repository</div>
-    <ol><li>Click <b>+ Select repository…</b>, next to <b>Data-mindset</b> above the message box.</li>
-      <li>First time only, a box says <i>"Two steps to work in your repository"</i>. Click <b>Connect GitHub</b> and sign in;
-        then <b>install the Claude GitHub App</b> and allow it access to <code>data-mindset-template</code>.</li>
-      <li>Back at <b>+ Select repository…</b>, pick <code>your-name/data-mindset-template</code> (press <b>Refresh list</b> if needed).</li></ol>
+    <ol><li>Click <b>+ Select repository…</b>, next to <b>Data-mindset</b>.</li>
+      <li>First time only: <b>Connect GitHub</b> and sign in, then <b>install the Claude GitHub App</b> and allow <code>data-mindset-template</code>.</li>
+      <li>Pick <code>your-name/data-mindset-template</code> (<b>Refresh list</b> if needed).</li></ol>
     <p class="see">above the message box: <b>Data-mindset</b> · <b>data-mindset-template</b> · <b>main</b>.</p>
-    <p class="note">You do this once. Next time: <b>+ New</b>, and it remembers both.</p></div>
+    <p class="note">You do this once: next time, <b>+ New</b> remembers both.</p></div>
 
   <div class="step"><span class="num">8</span><h3>Register for the course</h3>
     <ol><li>In the message box, type: <i>"Register me for the course"</i>.</li>
-      <li>Your assistant asks three things, one at a time. Paste each answer:
+      <li>Your assistant asks three things, one at a time:
         <table class="ask">
           <tr><td>Your name</td><td>as your lecturer knows you</td></tr>
-          <tr><td>Supabase project URL</td><td><b>Project Settings → Data API</b> · click <b>Copy</b> next to <b>API URL</b> (<code>https://….supabase.co/rest/v1/</code>: paste it as it is)</td></tr>
-          <tr><td>Publishable key</td><td><b>Project Settings → API Keys</b> · starts with <code>sb_publishable_</code></td></tr>
+          <tr><td>Supabase project URL</td><td><b>Project Settings → Data API</b> → <b>Copy</b> next to <b>API URL</b> (paste it as it is)</td></tr>
+          <tr><td>Publishable key</td><td><b>Project Settings → API Keys</b> (starts with <code>sb_publishable_</code>)</td></tr>
         </table></li></ol>
     <p class="see">it says your details are saved.</p>
     <p class="warn">Never paste the <b>secret</b> key here. If you do, your assistant tells you how to replace it.</p>
     <p class="note">Until you register, your lecturer can't see you or open lessons for you.</p></div>
 
-  <div class="step"><span class="num">9</span><h3>Your assistant checks everything, registers you, and you're in</h3>
-    <p>Right after step 8, your assistant checks your setup by itself and reports one line per check:</p>
+  <div class="step"><span class="num">9</span><h3>Your assistant checks everything</h3>
+    <p>Right after step 8, it checks your setup by itself, one line each:</p>
     <ol style="margin-top:8px"><li><b>database setup</b>: step 5 ran</li>
-      <li><b>analysis is readable</b>: your dashboard can read your views (step 5 set it up)</li>
-      <li><b>capture works</b>: it writes a test visit and a tap exactly as the app does, and finds them in your database</li>
-      <li><b>your assistant can build in your database</b>: step 7's key works (it builds a test view and removes it)</li></ol>
-    <p class="see"><b>ALL GOOD</b>, then <i>"Reported to your lecturer: setup done."</i> You're registered. If a line says FAIL, it tells you which step to redo.</p>
-    <p style="margin-top:12px">Then open <b>your dashboard</b> (it gives you the link) and sign in with the email and password from step 6.</p>
-    <p class="see">your dashboard, with a board for each lesson. In the same message, your assistant tells you what you're
-      working on: <b>lesson 0, Tools and concepts</b>, with the link to its slides. That's it: you're set up.</p>
-    <p class="note">Next time, start a new session (<b>Code → + New</b>, with <b>Data-mindset</b> on the chip) and ask
-      <i>"What are we working on?"</i></p></div>
+      <li><b>analysis is readable</b>: your dashboard can read your views</li>
+      <li><b>capture works</b>: a test visit is written and found</li>
+      <li><b>your assistant can build</b>: step 7's key works</li></ol>
+    <p class="see"><b>ALL GOOD</b>, then <i>"Reported to your lecturer: setup done."</i> If a line says FAIL, it tells you which step to redo.</p>
+    <p style="margin-top:12px">Then open <b>your dashboard</b> (it gives you the link) and sign in with step 6's email and password.</p>
+    <p class="see">your dashboard, and your first lesson: <b>lesson 0</b>, with the link to its slides.</p>
+    <p class="note">Next time: <b>Code → + New</b> (with <b>Data-mindset</b> on the chip), and ask <i>"What are we working on?"</i></p></div>
 
-  <div class="done">That's it. From now on, every lesson starts from <a href="../" id="home-link">your home page</a>, and your assistant
-    starts from <b>+ New</b> in the Claude app.</div>
+  <div class="done">That's it. Every lesson now starts from <a href="../" id="home-link">your home page</a>, and your assistant from <b>+ New</b> in the Claude app.</div>
 </div>
 <script>
   // The shared guide (the course's own copy, with no team) can't link to "your" home page: say where it is.

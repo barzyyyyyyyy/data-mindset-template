@@ -24,7 +24,11 @@
     if (e.key === 'Home') show(0);
     if (e.key === 'End') show(slides.length - 1);
   });
-  addEventListener('click', e => { if (!e.target.closest('a')) show(e.clientX < innerWidth / 3 ? i - 1 : i + 1); });
+  addEventListener('click', e => { if (!e.target.closest('a, button')) show(e.clientX < innerWidth / 3 ? i - 1 : i + 1); });
+    // Opening the assistant (data-copy) also copies what to say to it.
+  document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', () => {
+    navigator.clipboard.writeText(b.dataset.copy).catch(() => {});
+  }));
   // Links to the team's own pages (data-site="dashboard/"). Slides sit in <site>/slides/<lesson>/.
   const site = location.pathname.includes('/slides/') ? '../../' : '../../template/';
   document.querySelectorAll('a[data-site]').forEach(a => { a.href = site + a.dataset.site; });

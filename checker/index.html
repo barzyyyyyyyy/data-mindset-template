@@ -373,7 +373,7 @@
         if (me && cur && me.n < cur.n && me.data && me.data !== curData && !spec.questions.every(q => (saved[q.id] || {}).right)) {
           const el = document.getElementById('earlier');
           el.innerHTML = `This is an earlier lesson. Its answers come from its own practice data, and a later lesson's
-            data has replaced it. <a href="../view.html?f=units/${me.unit}.md">Load lesson ${me.n}'s practice data</a> (step 1 of its guided walkthrough) again first,
+            data has replaced it. <a href="../view.html?f=units/${me.unit}.md">Load lesson ${me.n}'s practice data</a> (on its lesson page) again first,
             then load the current lesson's data back when you are done.`;
           el.hidden = false;
         }

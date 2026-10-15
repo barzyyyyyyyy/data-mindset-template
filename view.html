@@ -35,6 +35,7 @@
   .data .ok { color: #1F7A3F; font-weight: 600; }
   .data .bad { color: #B42318; }
   .data p { margin: 10px 0 0; font-size: 14px; color: #6B6B66; }
+  .data .wait { margin: 0; color: #4A4A45; }
 </style>
 </head>
 <body>
@@ -76,9 +77,14 @@
       note.innerHTML = 'Then in Supabase: <b>SQL Editor → New query</b>, paste (⌘V), <b>Run</b>. It worked if the result shows ' +
         ['sessions', 'clicks', 'selections', 'identities', 'task_runs'].filter(k => k !== 'task_runs' || rows[k]).map(k => `${k} <b>${(rows[k] || 0).toLocaleString()}</b>`).join(', ') + '.';
       btn.disabled = false;
-    }).catch(e => { st.innerHTML = /task/i.test(e.message)
-      ? `<span class="bad">${e.message}</span> Then come back here: the button gets your data, made from your task.`
-      : `<span class="bad">Could not load the practice data. ${e.message}</span>`; });
+    }).catch(e => {
+      // Lesson 4: no task yet, so no data yet. Not an error: one calm sentence instead of the button.
+      if (/task/i.test(e.message)) {
+        box.innerHTML = '<p class="wait"><b>Not yet.</b> This lesson\'s data is made from your task. Once you and your assistant have saved it, come back here: this button will appear.</p>';
+        return;
+      }
+      st.innerHTML = `<span class="bad">Could not load the practice data. ${e.message}</span>`;
+    });
     btn.addEventListener('click', async () => {
       try { await navigator.clipboard.writeText(sql); st.innerHTML = '<span class="ok">Copied, all of it.</span>'; }
       catch { st.innerHTML = '<span class="bad">Your browser blocked the copy. Try again.</span>'; }
@@ -90,7 +96,8 @@
     : fetch(f, { cache: 'no-store' }))
     .then(r => { if (!r.ok) throw new Error(`Could not open ${f}`); return r.text(); })
     .then(md => {
-      document.getElementById('doc').innerHTML = marked.parse(md);
+      // A lesson file's part for the assistant (its brief) starts at this marker; the page shows only what comes before.
+      document.getElementById('doc').innerHTML = marked.parse(md.split(/<!--\s*for your assistant/i)[0]);
       const h = document.querySelector('#doc h1');
       if (h) document.title = h.textContent;
       document.querySelectorAll('#doc a[href^="data/copy.html?f="]').forEach(dataButton);

@@ -1,5 +1,29 @@
 # Lesson 1 · The data you start with
 
+**The question:** what exactly does the app record, and can you follow one visit through it?
+
+## How it goes
+
+1. **[Slides](slides/01-the-data-you-start-with/slides.html)**, in class.
+2. **Your assistant leads the practice.** In the Claude app: **Code → + New**, check the chips say
+   **Data-mindset** and your repository, and say ***"Let's practice lesson 1"***.
+3. **[Lesson 1 · Questions](checker/?lesson=lesson-01)**, answered from [your dashboard](dashboard/#unit-01), then the memo.
+
+## What you'll build
+
+Build on [your dashboard's **lesson 1** board](dashboard/#unit-01):
+- **Replay a visit**: paste a `session_id`, and see that visit as one timeline, oldest first: every click, choice and sign-in.
+
+Along the way: [the database map](units/database-map.html), [a test visit](app/?test=1), and finding yourself in the raw data.
+
+## The practice data
+
+Your assistant tells you when. Then copy it here and run it in Supabase's SQL Editor.
+
+[the practice data](data/copy.html?f=lesson-02)
+
+<!-- For your assistant: the page stops here. Everything below is your brief for this lesson; the team doesn't see it on the page. -->
+
 **The question this lesson asks:** what exactly does the app record, and can you follow one
 visit through it?
 
@@ -35,7 +59,7 @@ four tables and how they connect on paper, in your own words, and compare your d
 ## 4. Build: "Replay a visit"
 
 > **Build it with your AI assistant.** In the Claude app (or [claude.ai/code](https://claude.ai/code)): **Code → + New**,
-> check the chip above the message box says **Data-mindset**, and type: *"Let's start lesson 1"*.
+> check the chip above the message box says **Data-mindset**, and type: *"Let's practice lesson 1"*.
 > It walks you through everything below, one step at a time.
 
 Add a panel to [your dashboard's **lesson 1** board](dashboard/#unit-01): paste a `session_id`, and it shows that visit as one timeline,

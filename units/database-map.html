@@ -66,10 +66,10 @@
 <div class="wrap">
   <a class="back" href="../">← Your study platform</a>
   <h1>The database on one page</h1>
-  <p class="lead">Four tables. The app adds rows to them; nothing ever changes or deletes a row.
-    One visit is one row in <code>sessions</code>; everything that happened in it is in the other three.
-    Each column shows its type: <span class="ty">id</span> <span class="ty">text</span> <span class="ty">number</span>
-    <span class="ty">time</span> <span class="ty">true/false</span>. Any of them can be <code>null</code>: not known.</p>
+  <p class="lead">Four tables, plus <code>task_runs</code> from lesson 4. The app only adds rows: nothing is ever changed or deleted.
+    A visit is one row in <code>sessions</code>; what happened in it is in the others. Types:
+    <span class="ty">id</span> <span class="ty">text</span> <span class="ty">number</span>
+    <span class="ty">time</span> <span class="ty">true/false</span>. Any column can be <code>null</code>: not known.</p>
 
   <div class="tbl parent">
     <div class="head"><div class="name">sessions</div><div class="is">one row = <b>one visit</b></div></div>
@@ -97,7 +97,7 @@
     <div class="tbl">
       <div class="head"><div class="name">clicks</div><div class="is">one row = <b>one tap</b></div></div>
       <dl>
-        <dt class="key">session_id</dt><dd><span class="ty">id</span> the visit it belongs to</dd>
+        <dt class="key">session_id</dt><dd><span class="ty">id</span> its visit</dd>
         <dt>step</dt><dd><span class="ty">text</span> the screen</dd>
         <dt>overlay</dt><dd><span class="ty">text</span> a layer open on top, if any</dd>
         <dt>x, y</dt><dd><span class="ty">number</span> 0–1 within the app's frame</dd>
@@ -109,10 +109,10 @@
     <div class="tbl">
       <div class="head"><div class="name">selections</div><div class="is">one row = <b>one choice</b></div></div>
       <dl>
-        <dt class="key">session_id</dt><dd><span class="ty">id</span> the visit it belongs to</dd>
+        <dt class="key">session_id</dt><dd><span class="ty">id</span> its visit</dd>
         <dt>step</dt><dd><span class="ty">text</span> the screen the choice was made on</dd>
-        <dt>label</dt><dd><span class="ty">text</span> what the person pressed, as it reads on screen: <code>Register</code>, <code>Next</code>. For reading only: wording changes, so count with <code>value</code></dd>
-        <dt>value</dt><dd><span class="ty">text</span> what the system recorded: the screen it led to (<code>register_email</code>), what was opened (<code>open:p02</code>), searched (<code>search:dog</code>) or liked (<code>like:p02</code>, <code>unlike:p02</code>), or <code>nothing</code> for a button that does nothing (Share, Follow Jane, New post)</dd>
+        <dt>label</dt><dd><span class="ty">text</span> what the person pressed, as it reads on screen (<code>Register</code>, <code>Next</code>). For reading only: wording changes, so count with <code>value</code></dd>
+        <dt>value</dt><dd><span class="ty">text</span> what the system recorded: the screen it led to (<code>register_email</code>), a photo opened (<code>open:p02</code>), a search (<code>search:dog</code>), a like (<code>like:p02</code>, <code>unlike:p02</code>), or <code>nothing</code> for a button that does nothing (Share, Follow Jane, New post)</dd>
         <dt>duration_ms</dt><dd><span class="ty">number</span> time on the screen before choosing</dd>
         <dt>created_at</dt><dd><span class="ty">time</span> when</dd>
       </dl>
@@ -120,8 +120,8 @@
     <div class="tbl">
       <div class="head"><div class="name">identities</div><div class="is">one row = <b>one sign-in</b></div></div>
       <dl>
-        <dt class="key">session_id</dt><dd><span class="ty">id</span> the visit it belongs to</dd>
-        <dt>account</dt><dd><span class="ty">text</span> a scrambled id: same account, same value; never the email</dd>
+        <dt class="key">session_id</dt><dd><span class="ty">id</span> its visit</dd>
+        <dt>account</dt><dd><span class="ty">text</span> a scrambled id: same account, same value, never the email</dd>
         <dt>created_at</dt><dd><span class="ty">time</span> when</dd>
       </dl>
     </div>
@@ -130,38 +130,38 @@
   <div class="tbl later">
     <div class="head"><div class="name">task_runs</div><div class="is">one row = <b>one try at a task</b> <span class="muted">· from lesson 4</span></div></div>
     <dl>
-      <dt class="key">session_id</dt><dd><span class="ty">id</span> the visit it happened in (joins to <code>sessions</code>)</dd>
-      <dt>task</dt><dd><span class="ty">text</span> the task, in words, as the participant was given it</dd>
+      <dt class="key">session_id</dt><dd><span class="ty">id</span> the visit it happened in</dd>
+      <dt>task</dt><dd><span class="ty">text</span> the task, as the participant was given it</dd>
       <dt>started_at</dt><dd><span class="ty">time</span> when the task was shown</dd>
-      <dt>ended_at</dt><dd><span class="ty">time</span> when it ended: the moment the goal was reached, or Give up; empty if the run was interrupted (page reloaded or closed)</dd>
-      <dt>ended_by</dt><dd><span class="ty">text</span> <code>success</code> (the app ends the run itself when the goal is reached) or <code>gave_up</code></dd>
+      <dt>ended_at</dt><dd><span class="ty">time</span> when the goal was reached, or Give up pressed; empty if interrupted (page reloaded or closed)</dd>
+      <dt>ended_by</dt><dd><span class="ty">text</span> <code>success</code> (the app ends the run at the goal) or <code>gave_up</code></dd>
     </dl>
-    <p class="note">What they pressed during the run is in <code>clicks</code> and <code>selections</code>: the rows of the same <code>session_id</code> between <code>started_at</code> and <code>ended_at</code>.</p>
+    <p class="note">What they pressed during a run: the <code>clicks</code> and <code>selections</code> of the same <code>session_id</code>, between <code>started_at</code> and <code>ended_at</code>.</p>
   </div>
 
   <h2>Four things people get wrong</h2>
   <div class="pairs">
     <div class="pair"><div class="what">user_id</div><div class="looks">Looks like: a person</div>
-      <div class="really">It is a <b>browser</b>. One person on two devices is two; two people on one tablet are one.</div></div>
-    <div class="pair"><div class="what">a sessions row</div><div class="looks">Looks like: someone using the app</div>
-      <div class="really">It is a <b>visit</b>. Some visits have no taps at all.</div></div>
-    <div class="pair"><div class="what">is_test · is_synthetic</div><div class="looks">Look like: the same flag</div>
-      <div class="really"><b>Test</b> = your own runs. <b>Synthetic</b> = the course's practice data. Real visits have both false.</div></div>
-    <div class="pair"><div class="what">app</div><div class="looks">Looks like: always yours</div>
-      <div class="really">It is <b>whichever app wrote the row</b>. Always filter on it.</div></div>
+      <div class="really">A <b>browser</b>. One person on two devices is two; two people on one tablet are one.</div></div>
+    <div class="pair"><div class="what">a sessions row</div><div class="looks">Looks like: a user</div>
+      <div class="really">A <b>visit</b>. Some have no taps at all.</div></div>
+    <div class="pair"><div class="what">is_test · is_synthetic</div><div class="looks">Look like: one flag</div>
+      <div class="really"><b>Test</b> = your own runs. <b>Synthetic</b> = practice data. Real visits: both false.</div></div>
+    <div class="pair"><div class="what">app</div><div class="looks">Looks like: yours</div>
+      <div class="really"><b>Whichever app wrote the row.</b> Always filter on it.</div></div>
   </div>
 
   <h2>Who may do what</h2>
   <div class="rights">
-    <div class="right"><span class="t">The app</span>Anyone who opens it may <b>add</b> rows. Never read, change or delete them.</div>
-    <div class="right"><span class="t">You, signed in</span>May <b>read</b> rows. Never change or delete them.</div>
-    <div class="right"><span class="t">Your analysis</span>Views you build in the <code>analysis</code> space, on top of the raw rows.</div>
+    <div class="right"><span class="t">The app</span>Anyone who opens it may <b>add</b> rows, never read, change or delete.</div>
+    <div class="right"><span class="t">You, signed in</span>May <b>read</b> rows, never change or delete.</div>
+    <div class="right"><span class="t">Your analysis</span>Views you build in <code>analysis</code>, on top of the raw rows.</div>
   </div>
 
   <h2>Following one visit</h2>
-  <div class="follow">Find the visit in <code>sessions</code>. Take its <code>session_id</code>. Collect every row with that
-    <code>session_id</code> from <code>clicks</code>, <code>selections</code> and <code>identities</code>, and put them in order of
-    <code>created_at</code>. That is the visit, tap by tap.</div>
+  <div class="follow">Find the visit in <code>sessions</code> and take its <code>session_id</code>. Collect every row with it from
+    <code>clicks</code>, <code>selections</code> and <code>identities</code>, in order of <code>created_at</code>.
+    That is the visit, tap by tap.</div>
 </div>
 </body>
 </html>

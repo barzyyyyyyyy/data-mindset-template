@@ -109,6 +109,10 @@
   #table-count select { font: inherit; padding: 1px 4px; }
   td.num { font-variant-numeric: tabular-nums; }
   .empty { padding: 24px; text-align: center; color: #6B6B66; font-size: 14px; }
+  .placeholder.start { text-align: left; line-height: 1.6; }
+  .placeholder.start ol { margin: 10px 0 14px; padding-left: 20px; }
+  .placeholder.start a.go { display: inline-block; background: #C2410C; color: #fff; text-decoration: none; font-weight: 600; padding: 9px 16px; border-radius: 10px; }
+  .placeholder.start small { display: block; margin-top: 6px; color: #6B6B66; }
   .flag { color: #B42318; font-size: 12.5px; }
   details summary { cursor: pointer; color: #6B6B66; font-size: 12.5px; }
   details pre { white-space: pre-wrap; font-size: 12px; background: #FAFAF8; padding: 10px; border-radius: 8px; margin: 6px 0 0; }
@@ -201,8 +205,19 @@
       : `<div class="kicker">Example</div><h2>How a panel is built</h2><div class="muted">A view in <code>analysis</code> does the counting; the panel only shows it. Copy this pattern.</div>`;
     const panels = BOARDS[board] || [];
     if (!panels.length) {
-      $('board').innerHTML = `<div class="placeholder">Nothing built for this lesson yet.<br>
-        What to build is in <a href="../view.html?f=units/${esc(board)}.md">the guided walkthrough</a>. Your panels for it go here.</div>`;
+      // An empty lesson board says what fills it: the slides first, then the walkthrough with the assistant.
+      const say = l ? `Let's practice lesson ${l.n}` : '';
+      $('board').innerHTML = l ? `<div class="placeholder start">
+        <b>This board is still empty.</b> Your panels for lesson ${l.n} appear here as you build them.
+        <ol>
+          <li>${l.slides ? `Go through <a href="../${esc(l.slides)}">the lesson's slides</a>, if you haven't yet.` : 'Go through the lesson\'s slides, if you haven\'t yet.'}</li>
+          <li>Open your assistant and say <i>"${esc(say)}"</i>: it builds this board with you, step by step.</li>
+        </ol>
+        <a class="go" href="https://claude.ai/code" target="_blank" rel="noopener" data-say="${esc(say)}">Open your assistant ↗</a>
+        <small>The button also copies "${esc(say)}": in Claude Code click <b>+ New</b> and paste.</small></div>`
+        : `<div class="placeholder">Nothing here yet.</div>`;
+      const go = $('board').querySelector('[data-say]');
+      if (go) go.addEventListener('click', () => navigator.clipboard.writeText(go.dataset.say).catch(() => {}));
       return;
     }
     const card = (p, i) =>
