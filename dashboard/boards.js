@@ -30,8 +30,8 @@ const BOARDS = {
             .order('at', { ascending: true }).order('kind_order', { ascending: true });
           if (error) { out.innerHTML = `<p class="muted">${esc(error.message)}</p>`; return; }
           if (!data.length) { out.innerHTML = '<p class="muted">No clicks, choices or sign-ins for this session_id.</p>'; return; }
-          out.innerHTML = `<div class="scroll"><table><thead><tr><th>when</th><th>what happened</th><th>who</th><th>browser</th></tr></thead><tbody>${
-            data.map(r => `<tr><td>${esc(new Date(r.at).toLocaleString())}</td><td>${esc(r.what_happened)}</td><td>${esc(r.who ?? '')}</td><td>${esc(r.browser ?? '')}</td></tr>`).join('')}</tbody></table></div>`;
+          out.innerHTML = `<div class="scroll"><table><thead><tr><th>when</th><th>screen</th><th>what happened</th><th>who</th><th>browser</th></tr></thead><tbody>${
+            data.map(r => `<tr><td>${esc(new Date(r.at).toLocaleString())}</td><td>${esc(r.screen ?? '')}</td><td>${esc(r.what_happened)}</td><td>${esc(r.who ?? '')}</td><td>${esc(r.browser ?? '')}</td></tr>`).join('')}</tbody></table></div>`;
         };
         el.querySelector('#replay-go').addEventListener('click', go);
         el.querySelector('#replay-id').addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
