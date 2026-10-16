@@ -267,9 +267,9 @@ If `supabase-config.js` still says `YOUR-PROJECT`, or they say "register me for 
 `https://<owner>.github.io/<repository>/` (owner lowercase). Save it in `SITE`; don't ask. Then ask
 one thing per message, saying where to find it:
 1. **Their name**, as their lecturer knows them → `STUDENT`.
-2. **Their Supabase project URL**: Project Settings → Data API, **API URL** (Copy). It ends in
-   `/rest/v1/`: save only `https://….supabase.co`.
-3. **Their publishable key**: Project Settings → API Keys, starting `sb_publishable_`.
+2. **Their Supabase project URL**: on the project's home page, **Copy** next to the address opens a
+   list: **Project URL**. Save only `https://….supabase.co` (drop any `/rest/v1/`).
+3. **Their publishable key**: the same list, **Publishable key**, starting `sb_publishable_`.
 
 Put 2 and 3 in `supabase-config.js` (only those two). Check each looks right before saving; if
 not, say what looks wrong and ask again. If they paste a key starting `sb_secret_`, don't save it:

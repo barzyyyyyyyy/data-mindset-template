@@ -114,7 +114,7 @@
       <summary><b>Your AI assistant</b><span>How to start it ↓</span></summary>
       <ol>
         <li>Claude app → <b>Code</b> → <b>+ New</b></li>
-        <li>Check the chips say <b>Data-mindset</b> and <b class="team">your repository</b>. If not: the cloud chip → <b>Cloud → Data-mindset</b>, and <b>+ Select repository…</b></li>
+        <li>Pick <b>Data-mindset</b> on the cloud chip (<b>Cloud → Data-mindset</b>), and <b class="team">your repository</b> with <b>+ Select repository…</b></li>
         <li>Say what the lesson card says, e.g. <i>"Let's practice lesson 3"</i></li>
       </ol>
     </details>
@@ -200,7 +200,7 @@
       focus.slides && li(1, !focus.checker ? (open ? 'here' : '') : open && here > 1 ? 'done' : '', 'Class slides', 'In class. Open them again any time.',
         `<a class="act" href="${esc(focus.slides)}">Slides</a>`),
       focus.checker && li(2, !open ? '' : here === 2 ? 'here' : here > 2 || qDone ? 'done' : '', 'Guided walkthrough, with your assistant',
-        open ? `Click <b>+ New</b> and paste <span class="say">"${say}"</span> (the button copies it). Your assistant takes you through the practice data and your panels, step by step. <a class="minor" href="${brief(focus)}">Overview</a>`
+        open ? `Click <b>+ New</b>, pick <b>Data-mindset</b> on the cloud chip (Cloud → Data-mindset), then paste <span class="say">"${say}"</span> (the button copies it). Your assistant takes you through the practice data and your panels, step by step. <a class="minor" href="${brief(focus)}">Overview</a>`
              : 'Opens in your next class.',
         open ? `<a class="act" href="https://claude.ai/code" target="_blank" rel="noopener" data-say="${esc(say)}">Open your assistant ↗</a>` : '<span class="act off">Opens in class</span>'),
       focus.checker && li(3, !open ? '' : qDone ? 'done' : here === 3 ? 'here' : '', 'Questions and memo',
